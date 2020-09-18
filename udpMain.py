@@ -116,7 +116,7 @@ async def multirec(multiudp,mqttclient):
                     sensorgateway.token = res['token']
                     # "params":[{"ip":"192.168.43.8"}]
                     sensorgateway.ip = res['params'][0]['ip']
-                    print(gendate() + '--->' + sensorgateway.token)
+                    print(gendate() + '接收到网关心跳,token已更新--->' + sensorgateway.token)
         await asyncio.sleep(0.01)
 
 
