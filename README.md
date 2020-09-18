@@ -30,3 +30,23 @@ python uartMain.py
 - paho-mqtt
 - pymodbus
 
+
+
+### 注意事项
+
+- 如果在Linux运行UDP组播程序时遇到
+
+  ```shell
+   errno：19 no such device
+  ```
+
+  请使用**route -n** 查看组播地址是否已添加进路由表，如果没有请使用
+
+  ```shell
+  sudo route add -net 224.0.0.50 netmask 255.255.255.255 eth0
+  ```
+
+  224.0.0.50：为当前使用的多播IP地址
+
+  eth0：为当前使用的有效网卡
+
