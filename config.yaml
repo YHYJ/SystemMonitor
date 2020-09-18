@@ -1,0 +1,41 @@
+gateway:
+    sid: 44237c81c7b9
+    port: 9898
+    key: '3547993204669991'
+    # key: 0987654321qwerty
+    iv: 17996d093d28ddb3ba695a2e6f58562e
+    location: A1
+    interval: 30  #采集间隔时间每30s一次
+    sensorlist:
+        -
+            type: weather
+            sid: 158d00045affc9
+        -
+            type: leak
+            sid: 158d00023aa605
+        -
+            type: plug
+            sid: 158d0003938af3
+
+udp:
+    bindaddr: 0.0.0.0
+    desip: 224.0.0.50
+    port: 9898
+
+mqtt:
+    host: 192.168.3.4
+    port: 1883
+    keepalive: 60
+
+modbus:
+    unit: 1
+    method: rtu
+    port: /dev/ttyUSB0
+    timeout: 1
+    baudrate: 9600
+    pubtopic: sensor/uart/noise
+    location: A1
+    holdingreg:
+        addrcode: 1  #地址码
+        startaddr: 0  #数据起始地址
+        datalen: 1  #数据长度
