@@ -18,6 +18,10 @@ def on_message(client, userdata, msg):
     msgstr = str(msg.payload,'utf-8')
     print(gendate() + " " + msg.topic+"--->"+ msgstr)
 
+def on_disconnect(client, userdata, rc):
+    if rc != 0:
+        print("Unexpected disconnection.")
+
 async def runModbusClient(modbusclient,modbusobj,mqttclient):
     try:
         modbusclient.connect()
@@ -53,6 +57,7 @@ if __name__ == "__main__":
     mqclient = mqttobj.genMQTTClient()
     mqclient.on_connect = on_connect
     mqclient.on_message = on_message
+    mqclient.on_disconnect = on_disconnect
     mqclient.connect(mqttobj.host, mqttobj.port, mqttobj.keepalive)
 
     modbusobj = MODBUSclient()
