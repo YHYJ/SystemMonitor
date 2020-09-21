@@ -32,7 +32,6 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
                 print(gendate() + ':当前分贝值----> ' + str(decibel/10))
                 mqttinfo = modbusobj.genMQTTinfo(modbusobj.location,decibel)
                 mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
-            await asyncio.sleep(2)
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))
             try:
@@ -46,7 +45,7 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
                 print(gendate() + ' Modbus尝试重新失败！' + str(e))
             await asyncio.sleep(3)
         finally:
-            await asyncio.sleep(2)
+            await asyncio.sleep(modbusobj.interval)
 
 if __name__ == "__main__":
 

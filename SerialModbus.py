@@ -15,6 +15,7 @@ class MODBUSclient:
     datalen = 1  #数据长度
     pubtopic = 'sensor/uart/noise'
     location = 'A1'
+    interval = 3 #噪声采集间隔时间每3s一次
 
     client = None
 
@@ -34,9 +35,11 @@ class MODBUSclient:
             self.baudrate = configobj['modbus']['baudrate']
             self.pubtopic = configobj['modbus']['pubtopic']
             self.location = configobj['modbus']['location']
+            self.interval = configobj['modbus']['interval']
             self.addrcode = configobj['modbus']['holdingreg']['addrcode']
             self.startaddr = configobj['modbus']['holdingreg']['startaddr']
             self.datalen = configobj['modbus']['holdingreg']['datalen']
+            
         except Exception as e:
             logger.writeLog("串口modbus组件初始化失败-->" + str(e),'modbus.log')
 

@@ -35,6 +35,7 @@ modbus:
     baudrate: 9600
     pubtopic: sensor/uart/noise
     location: A1
+    interval: 3 #噪声采集间隔时间每3s一次
     holdingreg:
         addrcode: 1  #地址码
         startaddr: 0  #数据起始地址

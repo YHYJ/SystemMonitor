@@ -9,6 +9,7 @@ class UDPclient:
     desip = '224.0.0.50'
     port = 9898
     
+    
     def __init__(self):
         '''
         初始化，从配置文件读取相关UDP参数
