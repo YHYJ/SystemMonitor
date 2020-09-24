@@ -6,6 +6,8 @@ gateway:
     iv: 17996d093d28ddb3ba695a2e6f58562e
     location: A1
     interval: 30  #采集间隔时间每30s一次
+    weatherpubtopic: sensor/udp/weather
+    leakpubtopic : sensor/udp/leak
     sensorlist:
         -
             type: weather

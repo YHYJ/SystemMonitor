@@ -26,6 +26,8 @@ class Gateway(AqaraDev):
     desport = ''   #发送指令的目标端口
     sensorlist = []
     interval = 10 #获取数据间隔，默认10s/次
+    weatherpubtopic = '' #温湿度大气压发布MQTT主题
+    leakpubtopic = '' #漏液检测发布MQTT主题
 
     def __init__(self):
         '''
@@ -40,6 +42,8 @@ class Gateway(AqaraDev):
             self.location = configobj['gateway']['location']
             self.desport = configobj['gateway']['port']
             self.interval = configobj['gateway']['interval']
+            self.weatherpubtopic = configobj['gateway']['weatherpubtopic']
+            self.leakpubtopic = configobj['gateway']['leakpubtopic']
             self.sensorlist = configobj['gateway']['sensorlist']
             # print(configobj)
         except Exception as e:
@@ -77,7 +81,6 @@ class Plug(AqaraDev):
 
 #温度湿度大气压传感器
 class Weather(AqaraDev):
-    mqtttopic = 'sensor/udp/weather'
     
     def genMQTTinfo(self,location, temp = 0.0, humi = 0.0, press = 0.0, battery = 0):
         '''
@@ -91,12 +94,6 @@ class Weather(AqaraDev):
                 "battery":battery
                 }
         return info
-
-    def setMQTTtopic(self,topic):
-        '''
-        修改发布主题
-        '''
-        self.mqtttopic = topic
 
 #门传感器
 class SensorMagnet(AqaraDev):

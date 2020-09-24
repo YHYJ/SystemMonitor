@@ -70,7 +70,7 @@ async def udpclientsend(udpclient,mqttclient):
                                                          res['params'][2]['humidity'],
                                                          res['params'][3]['pressure'],
                                                          res['params'][0]['battery_voltage'])
-                            mqttclient.publish(sensorweather.mqtttopic,json.dumps(mqttinfo))
+                            mqttclient.publish(sensorgateway.weatherpubtopic,json.dumps(mqttinfo))
                     break
                 i = i + 1
         await asyncio.sleep(0.01)
