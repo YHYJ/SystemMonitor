@@ -25,7 +25,7 @@ udp:
     port: 9898
 
 mqtt:
-    host: 192.168.3.4
+    host: 127.0.0.1
     port: 1883
     keepalive: 60
 
@@ -42,3 +42,22 @@ modbus:
         addrcode: 1  #地址码
         startaddr: 0  #数据起始地址
         datalen: 1  #数据长度
+
+pt100:
+    unit: 1
+    method: rtu
+    port: COM3
+    timeout: 1
+    baudrate: 9600
+    pubtopic: sensor/uart/pt100
+    location: A1
+    interval: 1 #噪声采集间隔时间每3s一次
+    holdingreg:
+        addrcode: 1  #地址码
+        startaddr: 2  #数据起始地址
+        datalen: 1  #数据长度
+    damrange: 20 #DAM通道量程
+    damexpand: 1.2 #DAM通道量程扩大值
+    minma: 4 #最低电流值
+    mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
+    
