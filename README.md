@@ -19,6 +19,12 @@ uart->mqtt
 python uartMain.py
 ```
 
+(PT100->DAM->)uart->mqtt
+
+```shell
+python pt100Main.py
+```
+
 
 
 ### 依赖库列表
