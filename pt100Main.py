@@ -61,7 +61,7 @@ if __name__ == "__main__":
     mqclient.connect(mqttobj.host, mqttobj.port, mqttobj.keepalive)
 
     pt100obj = PT100client()
-    pt100client = pt100obj.genPtClient()
+    pt100client = pt100obj.genPtClient()     
 
     looper = asyncio.get_event_loop()
     looper.create_task(runModbusClient(pt100client,pt100obj,mqclient))
