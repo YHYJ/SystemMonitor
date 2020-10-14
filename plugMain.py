@@ -28,14 +28,14 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     msgstr = str(msg.payload,'utf-8')
     # print(gendate() + " " + msg.topic+"--->"+ msgstr)
-    if msgstr == 'on' or msgstr == 'off':
+    if str.strip(msgstr) == 'on' or str.strip(msgstr) == 'off':
         if sensorgateway.token != '':
-            insstr = sensorplug.writeStatus(msgstr,sensorgateway.token)
+            insstr = sensorplug.writeStatus(str.strip(msgstr),sensorgateway.token)
             msgque.put(insstr)
             print(gendate() + ' 生成指令--->' + insstr)
         else:
             print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败: ' + msgstr)
-    if msgstr == 'weather':
+    elif str.strip(msgstr) == 'weather':
         insstr = sensorweather.readDevStatus()
         msgque.put(insstr)
         print(gendate() + ' 生成指令--->' + insstr)
