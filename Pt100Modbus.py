@@ -77,7 +77,7 @@ class PT100client:
         temp = temprature & 0x7FFF #将最高位符号位赋值为0(避免对计算结果影响)
         temp = temp/32767 * self.damrange * self.damexpand 
         reltemp = temp - self.minma
-        reltemp = round(reltemp / self.mapercelsius,4) #保留4位小数
+        reltemp = round(reltemp / self.mapercelsius,2) #保留2位小数
         if symbol == 1:
             reltemp = 0 - reltemp
         return reltemp

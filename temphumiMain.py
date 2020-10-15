@@ -1,4 +1,4 @@
-from Pt100Modbus import PT100client
+from TemphumiModbus import TemphumiClient
 from MqttClient import MQTTclient
 import asyncio
 import json
@@ -32,10 +32,10 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
         try:
             rr = modbusclient.read_holding_registers(modbusobj.startaddr, modbusobj.datalen, unit=modbusobj.unit)
             if rr.registers:
-                temprature = rr.registers[0]
-                reltemp = modbusobj.calcRealTemprature(temprature)
-                print(gendate() + ':当前PT100测量温度值----> ' + str(reltemp))
-                mqttinfo = modbusobj.genMQTTinfo(modbusobj.location,int(reltemp*100))
+                humi = int(rr.registers[0])
+                temp = int(rr.registers[1])
+                print(gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
+                mqttinfo = modbusobj.genMQTTinfo(modbusobj.location,temp,humi)
                 mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))
@@ -61,11 +61,11 @@ if __name__ == "__main__":
     mqclient.on_disconnect = on_disconnect
     mqclient.connect(mqttobj.host, mqttobj.port, mqttobj.keepalive)
 
-    pt100obj = PT100client()
-    pt100client = pt100obj.genPtClient()     
+    modbusobj = TemphumiClient()
+    modclient = modbusobj.genTemphumiClient()
 
     looper = asyncio.get_event_loop()
-    looper.create_task(runModbusClient(pt100client,pt100obj,mqclient))
+    looper.create_task(runModbusClient(modclient,modbusobj,mqclient))
 
     mqclient.loop_start()
     looper.run_forever()

@@ -60,4 +60,18 @@ pt100:
     damexpand: 1.2 #DAM通道量程扩大值
     minma: 4 #最低电流值
     mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
+
+temphumi:
+    unit: 1
+    method: rtu
+    port: COM3
+    timeout: 1
+    baudrate: 4800
+    pubtopic: sensor/uart/temphumi
+    location: A1
+    interval: 1 #采集间隔时间每1s一次
+    holdingreg:
+        addrcode: 1  #地址码
+        startaddr: 0  #数据起始地址
+        datalen: 2  #数据长度
     
