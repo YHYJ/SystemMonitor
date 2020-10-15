@@ -4,8 +4,10 @@ import asyncio
 import json
 import time
 import queue
+import argparse
 
 msgque = queue.Queue(0)
+devtype = '' #设备类型
 
 def gendate():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
@@ -32,9 +34,20 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
         try:
             rr = modbusclient.read_holding_registers(modbusobj.startaddr, modbusobj.datalen, unit=modbusobj.unit)
             if rr.registers:
-                decibel = int(rr.registers[0])
-                print(gendate() + ':当前分贝值----> ' + str(decibel/10))
-                mqttinfo = modbusobj.genMQTTinfo(modbusobj.location,decibel)
+                if devtype == 'noise':
+                    decibel = int(rr.registers[0])
+                    print(gendate() + ':当前噪声值----> ' + str(decibel/10))
+                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,noise = decibel)
+                elif devtype == 'pt100':
+                    temprature = rr.registers[0]
+                    reltemp = modbusobj.calcRealTemprature(temprature)
+                    print(gendate() + ':当前PT100测量温度值----> ' + str(reltemp))
+                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,temp = int(reltemp*100))
+                elif devtype == 'temphumi':
+                    humi = int(rr.registers[0])
+                    temp = int(rr.registers[1])
+                    print(gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
+                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,temp = temp,humi = humi)
                 mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))
@@ -53,6 +66,11 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser(description='Every to MQTT')
+    parser.add_argument("-device", type=str, default="noise")
+    args = parser.parse_args()
+    devtype = args.device
+
     mqttobj = MQTTclient()
     mqclient = mqttobj.genMQTTClient()
     mqclient.on_connect = on_connect
@@ -60,7 +78,7 @@ if __name__ == "__main__":
     mqclient.on_disconnect = on_disconnect
     mqclient.connect(mqttobj.host, mqttobj.port, mqttobj.keepalive)
 
-    modbusobj = MODBUSclient()
+    modbusobj = MODBUSclient(devtype)
     modclient = modbusobj.genModClient()
 
     looper = asyncio.get_event_loop()

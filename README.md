@@ -6,25 +6,29 @@
 
 
 ### 运行方式
-
+绿米智能网关
 udp->mqtt     
 
 ```shell
 python udpMain.py
 ```
+Modbus串口模式
 
-uart->mqtt    
-
-```shell
-python uartMain.py
-```
-
-(PT100->DAM->)uart->mqtt
+- 噪声传感器     
 
 ```shell
-python pt100Main.py
+python uartMain.py -device=noise
 ```
+- 贴片式温度传感器
 
+```shell
+python uartMain.py -device=pt100
+```
+- 建大仁科温湿度传感器
+
+```shell
+python uartMain.py -device=temphumi
+```
 
 
 ### 依赖库列表
