@@ -25,10 +25,10 @@ class MODBUSclient:
     #pt100 特有属性
     damrange = 20 #DAM通道量程
     damexpand = 1.2 #DAM通道量程扩大值
-    minma: 4 #最低电流值
-    mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
+    minma = 4 #最低电流值
+    mapercelsius = 0.32 #对应电流为(20-4)/50=0.32mA/℃
 
-    devtype= 'noise' #默认初始化噪声传感器
+    devtype = 'noise' #默认初始化噪声传感器
     client = None
     
 

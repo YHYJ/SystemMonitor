@@ -42,7 +42,7 @@ modbus:
         holdingreg:
             addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
-            datalen: 1  #数据长度
+            datalen: 1  #数据长度 
     pt100:
         unit: 1
         method: rtu
