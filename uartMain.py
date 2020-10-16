@@ -34,25 +34,7 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
         try:
             rr = modbusclient.read_holding_registers(modbusobj.startaddr, modbusobj.datalen, unit=modbusobj.unit)
             if rr.registers:
-                if devtype == 'noise':
-                    decibel = int(rr.registers[0])
-                    print(gendate() + ':当前噪声值----> ' + str(decibel/10))
-                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,noise = decibel)
-                elif devtype == 'pt100':
-                    temprature = rr.registers[0]
-                    reltemp = modbusobj.calcRealTemprature(temprature)
-                    print(gendate() + ':当前PT100测量温度值----> ' + str(reltemp))
-                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,temp = int(reltemp*100))
-                elif devtype == 'temphumi':
-                    humi = int(rr.registers[0])
-                    temp = int(rr.registers[1])
-                    print(gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
-                    mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,temp = temp,humi = humi)
-                elif devtype == 'pressure':
-                    p = int(rr.registers[0])
-                    pre = round((modbusobj.waterpremax - modbusobj.waterpremin) / 2000 * p + modbusobj.waterpremin,2)
-                    print(gendate() + ':当前压力值----> ' + str(pre))
-                    mqttinfo = modbusobj.genMQTTinfo(modbusobj.location, waterpress = int(pre*100))
+                mqttinfo = modbusobj.calcpipe(rr)
                 mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))

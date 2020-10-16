@@ -70,7 +70,13 @@ class MODBUSclient:
             
         except Exception as e:
             logger.writeLog("串口modbus组件初始化失败-->" + str(e),'modbus.log')
-
+    
+    def gendate(self):
+        '''
+        返回当前日期时间
+        '''
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    
     def genModClient(self):
         self.client = ModbusClient(method = self.method, 
                               port = self.port, 
@@ -111,3 +117,28 @@ class MODBUSclient:
         if symbol == 1:
             reltemp = 0 - reltemp
         return reltemp
+
+    def calcpipe(self,rr):
+        '''
+        计算管道，用于对不同的modbus设备进行计算，并返回测量的数值
+        '''
+        if self.devtype == 'noise':
+            decibel = int(rr.registers[0])
+            print(self.gendate() + ':当前噪声值----> ' + str(decibel/10))
+            mqttinfo = self.genMQTTinfo(location = self.location,noise = decibel)
+        elif self.devtype == 'pt100':
+            temprature = rr.registers[0]
+            reltemp = self.calcRealTemprature(temprature)
+            print(self.gendate() + ':当前PT100测量温度值----> ' + str(reltemp))
+            mqttinfo = self.genMQTTinfo(location = self.location,temp = int(reltemp*100))
+        elif self.devtype == 'temphumi':
+            humi = int(rr.registers[0])
+            temp = int(rr.registers[1])
+            print(self.gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
+            mqttinfo = self.genMQTTinfo(location = self.location,temp = temp,humi = humi)
+        elif self.devtype == 'pressure':
+            p = int(rr.registers[0])
+            pre = round((self.waterpremax - self.waterpremin) / 2000 * p + self.waterpremin,2)
+            print(self.gendate() + ':当前压力值----> ' + str(pre))
+            mqttinfo = self.genMQTTinfo(self.location, waterpress = int(pre*100))
+        return mqttinfo
