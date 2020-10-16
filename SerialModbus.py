@@ -28,6 +28,10 @@ class MODBUSclient:
     minma = 4 #最低电流值
     mapercelsius = 0.32 #对应电流为(20-4)/50=0.32mA/℃
 
+     #水压
+    waterpremax = 1.6
+    waterpremin = 0
+
     devtype = 'noise' #默认初始化噪声传感器
     client = None
     
@@ -60,6 +64,9 @@ class MODBUSclient:
                 self.damexpand = configobj['modbus'][devtype]['damexpand']
                 self.minma = configobj['modbus'][devtype]['minma'] #最低电流值
                 self.mapercelsius = configobj['modbus'][devtype]['mapercelsius'] #对应电流
+            if devtype == 'pressure':
+                self.waterpremax = configobj['modbus'][devtype]['waterpremax']
+                self.waterpremin = configobj['modbus'][devtype]['waterpremin']
             
         except Exception as e:
             logger.writeLog("串口modbus组件初始化失败-->" + str(e),'modbus.log')
@@ -71,7 +78,7 @@ class MODBUSclient:
                               baudrate = self.baudrate)
         return self.client
     
-    def genMQTTinfo(self, location, noise=0, temp=0, humi=0):
+    def genMQTTinfo(self, location, noise=0, temp=0, humi=0, waterpress=0):
         '''
         生成MQTT发布报文
         {"location":"F1","decibel":332}
@@ -82,6 +89,8 @@ class MODBUSclient:
             info = {"location":location,"pt100":temp}
         elif self.devtype == 'temphumi':
             info = {"location":location,"temp":temp,"humi":humi}
+        elif self.devtype == 'pressure':
+            info = {"location":location,"pressure":waterpress}
         else:
             info = 'genMQTTinfo error : not find match Device'
         return info

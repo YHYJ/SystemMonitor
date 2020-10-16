@@ -48,6 +48,11 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
                     temp = int(rr.registers[1])
                     print(gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
                     mqttinfo = modbusobj.genMQTTinfo(location = modbusobj.location,temp = temp,humi = humi)
+                elif devtype == 'pressure':
+                    p = int(rr.registers[0])
+                    pre = round((modbusobj.waterpremax - modbusobj.waterpremin) / 2000 * p + modbusobj.waterpremin,2)
+                    print(gendate() + ':当前压力值----> ' + str(pre))
+                    mqttinfo = modbusobj.genMQTTinfo(modbusobj.location, waterpress = int(pre*100))
                 mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))

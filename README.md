@@ -14,6 +14,10 @@ python udpMain.py
 ```
 Modbus串口模式
 
+***注意：如果运行python uartMain.py不加 -device参数，则默认以噪声传感器方式运行***
+
+​           ***即 python uartMain.py    ====      python uartMain.py -device=noise***
+
 - 噪声传感器     
 
 ```shell
@@ -28,6 +32,11 @@ python uartMain.py -device=pt100
 
 ```shell
 python uartMain.py -device=temphumi
+```
+- 水压传感器
+
+```shell
+python uartMain.py -device=pressure
 ```
 
 

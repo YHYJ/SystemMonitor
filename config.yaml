@@ -73,4 +73,19 @@ modbus:
             addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
             datalen: 2  #数据长度
+    pressure:
+        unit: 1
+        method: rtu
+        port: COM5
+        timeout: 1
+        baudrate: 9600
+        pubtopic: sensor/uart/pressure
+        location: A1
+        interval: 1 #压力值采集间隔时间每3s一次
+        holdingreg:
+            addrcode: 1  #地址码
+            startaddr: 1  #数据起始地址
+            datalen: 1  #数据长度
+        waterpremax: 1.6   # 压力值上限
+        waterpremin: 0    # 压力值下限
     
