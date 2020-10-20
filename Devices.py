@@ -20,11 +20,18 @@ class AqaraDev:
 
 #网关
 class Gateway(AqaraDev):
-    sid = ''    #网关sid
-    token = ''  #发送write指令时需要的token
-    ip = ''     #网关的ip
+    sidlist = []    #网关sid列表  列表单个对象
+    ''' 
+                    [ 
+                        {"sid": "44237c81c7b9",
+                         "key": "3547993204669991",
+                         "ip": "127.0.0.1",
+                         "token":"dsfsdfsfddsf"
+                         "sensorlist":[{"type": "weather","sid":"158d00045affc9"}]
+                        }
+                    ]
+    '''
     desport = ''   #发送指令的目标端口
-    sensorlist = []
     interval = 10 #获取数据间隔，默认10s/次
     weatherpubtopic = '' #温湿度大气压发布MQTT主题
     leakpubtopic = '' #漏液检测发布MQTT主题
@@ -38,42 +45,44 @@ class Gateway(AqaraDev):
             f = open("config.yaml","r+",encoding="utf-8")
             fstream = f.read()
             configobj = yaml.safe_load(fstream)
-            self.sid = configobj['gateway']['sid']
+            self.sidlist = configobj['gateway']['sidlist']
             self.location = configobj['gateway']['location']
             self.desport = configobj['gateway']['port']
             self.interval = configobj['gateway']['interval']
             self.weatherpubtopic = configobj['gateway']['weatherpubtopic']
             self.leakpubtopic = configobj['gateway']['leakpubtopic']
-            self.sensorlist = configobj['gateway']['sensorlist']
             # print(configobj)
         except Exception as e:
             logger.writeLog("网关组件初始化失败" + str(e),'dev.log')
     
-    def getPlugSid(self):
+    def getPlugSid(self, gatewayid):
         sidlist = []
-        for items in self.sensorlist:
-            if items['type'] == 'plug':
-                sidlist.append(items['sid'])
+        for items in self.sidlist:
+            if items['sid'] == gatewayid:
+                for item in items['sensorlist']:
+                    if item['type'] == 'plug':
+                        sidlist.append(items['sid'])
         return sidlist
 
-    def getWeatherSid(self):
+    def getWeatherSid(self, gatewayid):
         sidlist = []
-        for items in self.sensorlist:
-            if items['type'] == 'weather':
-                sidlist.append(items['sid'])
-        # print('weather', sidlist)
+        for items in self.sidlist:
+            if items['sid'] == gatewayid:
+                for item in items['sensorlist']:
+                    if item['type'] == 'weather':
+                        sidlist.append(items['sid'])
         return sidlist
 
 
 # 插座
 class Plug(AqaraDev):
     # status = "on" 打开插座, status = "off" 关闭插座
-    def writeStatus(self,status,token):
-        strkey = self.aqaencrypt.encrypt(token)
+    def writeStatus(self,sid,key,status,token):
+        strkey = self.aqaencrypt.encrypt(key,token)
         insobj = {
             "cmd":"write",
             "model":"plug",
-            "sid":self.sid,
+            "sid":sid,
             "key":strkey,
             "params":[{"channel_0":status}]
         }

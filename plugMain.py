@@ -13,10 +13,8 @@ udpobj = UDPclient()
 sensorgateway = Gateway()
 
 sensorplug = Plug()
-sensorplug.sid = sensorgateway.getPlugSid()[0]
 
 sensorweather = Weather()
-sensorweather.sid = sensorgateway.getWeatherSid()[0]
 
 def gendate():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
@@ -26,21 +24,50 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("cmd")
 
 def on_message(client, userdata, msg):
+    '''
+    命令报文格式 {
+                    "gatewaysid":"aaaaaaa",
+                    "sensorsid":"dfdfdfd",
+                    "sensortype":"weather",  # weather  plug  leak
+                    "cmd":"read", # read on off
+                }
+    '''
     msgstr = str(msg.payload,'utf-8')
     # print(gendate() + " " + msg.topic+"--->"+ msgstr)
-    if sensorgateway.token != '':
-        if str.strip(msgstr) == 'on' or str.strip(msgstr) == 'off':
-                insstr = sensorplug.writeStatus(str.strip(msgstr),sensorgateway.token)
-                msgque.put(insstr)
-                print(gendate() + ' 生成控制开关指令--->' + insstr)
-        elif str.strip(msgstr) == 'weather':
-            insstr = sensorweather.readDevStatus()
-            msgque.put(insstr)
-            print(gendate() + ' 生成查询温湿度大气压指令--->' + insstr)
-        else:
-            print(gendate() + ' 此指令无法识别--->' + msgstr)
+    if len(str.strip(msgstr)) > 1: #判断报文是否为空
+        try:
+            msgobj = json.loads(msgstr)
+            findobj = None #存放找到的设备信息
+            #1.判断报文中携带的 网关SID是否存在
+            for siditem in sensorgateway.sidlist:
+                if siditem['sid'] == msgobj['gatewaysid']:
+                    findobj = siditem
+                    break
+            if findobj != None:
+                if findobj['token'] != '':
+                    if findobj['sensortype'] == "plug" and (findobj['cmd'] == 'on' or findobj['cmd'] == 'off'):
+                        insstr = sensorplug.writeStatus(findobj['sensorsid'],findobj['key'],findobj['cmd'],findobj["token"])
+                        tempobj = {"gatewaysid":findobj['sid'],"gatewayip":findobj['ip'],"insstr":insstr}
+                        msgque.put(tempobj)
+                        print(gendate() + ' 生成控制开关指令--->' + insstr)
+                    elif findobj['sensortype'] == "weather" and findobj['cmd'] == 'weather':
+                        # insstr = sensorweather.readDevStatus()
+                        # msgque.put(insstr)
+                        # print(gendate() + ' 生成查询温湿度大气压指令--->' + insstr)
+                        pass
+                    else:
+                        # print(gendate() + ' 此指令无法识别--->' + msgstr)
+                        pass
+                else:
+                    print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败, 稍后请重试: ' + msgstr)
+            else:
+                logger.writeLog(gendate() + ' 未找到要执行操作的设备->'+ msg + '\nReson->'+ msgstr,'mqtt.log')
+        except Exception as e:
+            logger.writeLog(gendate() + ' MQTT指令格式错误->'+ msg + '\nReson->'+ str(e),'mqtt.log')
     else:
-        print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败, 稍后请重试: ' + msgstr)
+        logger.writeLog(gendate() + ' MQTT指令格式错误->' + '\nReson->'+ msgstr,'mqtt.log')
+
+
 
 
 async def udpclientsend(udpclient,mqttclient):
@@ -48,9 +75,9 @@ async def udpclientsend(udpclient,mqttclient):
         if not msgque.empty():
             msg = msgque.get()
             # msg = input(">> ").strip()
-            ip_port = (sensorgateway.ip, udpobj.port)
+            ip_port = (msg['gatewayip'], udpobj.port)
             try:
-                udpclient.sendto(msg.encode('utf-8'),ip_port)
+                udpclient.sendto(msg['insstr'].encode('utf-8'),ip_port)
             except Exception as e:
                 logger.writeLog(gendate() + ' 发送UDP请求指令失败->'+ msg + '\nReson->'+ str(e),'udpmain.log')
             print(gendate() + ' 等待接收信息--->')
@@ -111,12 +138,13 @@ async def multirec(multiudp,mqttclient):
                     pass
             
             # print(gendate() + '-->' + json.dumps(res))
-            if res['sid'] == sensorgateway.sid:
-                if res['cmd'] == 'heartbeat':
-                    sensorgateway.token = res['token']
-                    # "params":[{"ip":"192.168.43.8"}]
-                    sensorgateway.ip = res['params'][0]['ip']
-                    print(gendate() + '--->' + sensorgateway.token)
+            for gatewayitem in sensorgateway.sidlist:
+                if res['sid'] == gatewayitem['sid']:
+                    if res['cmd'] == 'heartbeat':
+                        gatewayitem['token'] = res['token']
+                        # "params":[{"ip":"192.168.43.8"}]
+                        gatewayitem['ip'] = res['params'][0]['ip']
+                        print(gendate() + '更新TOKEN--->' + str(gatewayitem))
         await asyncio.sleep(0.01)
 
 
@@ -146,7 +174,7 @@ if __name__ == "__main__":
     looper = asyncio.get_event_loop()
     looper.create_task(udpclientsend(udpclient,mqclient))
     looper.create_task(multirec(muticlient,mqclient))
-    looper.create_task(requestWeather(mqclient))
+    # looper.create_task(requestWeather(mqclient))
 
     mqclient.loop_start()
     looper.run_forever()

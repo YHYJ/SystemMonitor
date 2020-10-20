@@ -15,7 +15,7 @@ class AqaraEncrypt:
             f = open("config.yaml","r+",encoding="utf-8")
             fstream = f.read()
             configobj = yaml.safe_load(fstream)
-            self.secretKey = configobj['gateway']['key'].encode('utf-8')
+            # self.secretKey = configobj['gateway']['key'].encode('utf-8')
             self.iv =a2b_hex(configobj['gateway']['iv'])
         except Exception as e:
             logger.writeLog("AES加密组件初始化失败" + str(e),'encrypt.log')
@@ -31,10 +31,10 @@ class AqaraEncrypt:
         return text.encode('utf-8')
 
     #加密
-    def encrypt(self, content):
+    def encrypt(self,key,content):
         mode = AES.MODE_CBC
         text = self.add_to_16(content)
-        cryptos = AES.new(self.secretKey, mode, self.iv)
+        cryptos = AES.new(key, mode, self.iv)
         cipher_text = cryptos.encrypt(text)
         # 因为AES加密后的字符串不一定是ascii字符集的，输出保存可能存在问题，所以这里转为16进制字符串
         tempres = b2a_hex(cipher_text)
@@ -42,16 +42,8 @@ class AqaraEncrypt:
         return res
 
     # 解密后，去掉补足的空格用strip() 去掉
-    def decrypt(self, text):
+    def decrypt(self,key,text):
         mode = AES.MODE_CBC
-        cryptos = AES.new(self.secretKey, mode, self.iv)
+        cryptos = AES.new(key, mode, self.iv)
         plain_text = cryptos.decrypt(a2b_hex(text))
         return bytes.decode(plain_text).rstrip('\0')
-
-
-if __name__ == '__main__':
-    ea = AqaraEncrypt()
-    e = ea.encrypt("1234567890abcdef")  # 加密
-    d = ea.decrypt(e)  # 解密
-    print("加密:", e)
-    print("解密:", d)
