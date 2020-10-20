@@ -105,7 +105,7 @@ async def multirec(multiudp,mqttclient):
                                                          res['params'][2]['humidity'],
                                                          res['params'][3]['pressure'],
                                                          res['params'][0]['battery_voltage'])
-                    mqttclient.publish(sensorweather.mqtttopic,json.dumps(mqttinfo))
+                    mqttclient.publish(sensorgateway.weatherpubtopic,json.dumps(mqttinfo))
             elif res['model'] == 'plug':
                 if res['cmd'] == 'heartbeat':
                     pass

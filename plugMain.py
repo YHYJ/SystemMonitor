@@ -28,19 +28,19 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     msgstr = str(msg.payload,'utf-8')
     # print(gendate() + " " + msg.topic+"--->"+ msgstr)
-    if str.strip(msgstr) == 'on' or str.strip(msgstr) == 'off':
-        if sensorgateway.token != '':
-            insstr = sensorplug.writeStatus(str.strip(msgstr),sensorgateway.token)
+    if sensorgateway.token != '':
+        if str.strip(msgstr) == 'on' or str.strip(msgstr) == 'off':
+                insstr = sensorplug.writeStatus(str.strip(msgstr),sensorgateway.token)
+                msgque.put(insstr)
+                print(gendate() + ' 生成控制开关指令--->' + insstr)
+        elif str.strip(msgstr) == 'weather':
+            insstr = sensorweather.readDevStatus()
             msgque.put(insstr)
-            print(gendate() + ' 生成指令--->' + insstr)
+            print(gendate() + ' 生成查询温湿度大气压指令--->' + insstr)
         else:
-            print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败: ' + msgstr)
-    elif str.strip(msgstr) == 'weather':
-        insstr = sensorweather.readDevStatus()
-        msgque.put(insstr)
-        print(gendate() + ' 生成指令--->' + insstr)
+            print(gendate() + ' 此指令无法识别--->' + msgstr)
     else:
-        print(gendate() + ' 此指令无法识别--->' + msgstr)
+        print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败, 稍后请重试: ' + msgstr)
 
 
 async def udpclientsend(udpclient,mqttclient):
@@ -70,7 +70,7 @@ async def udpclientsend(udpclient,mqttclient):
                                                          res['params'][2]['humidity'],
                                                          res['params'][3]['pressure'],
                                                          res['params'][0]['battery_voltage'])
-                            mqttclient.publish(sensorweather.mqtttopic,json.dumps(mqttinfo))
+                            mqttclient.publish(sensorgateway.weatherpubtopic,json.dumps(mqttinfo))
                     break
                 i = i + 1
         await asyncio.sleep(0.01)
