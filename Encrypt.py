@@ -34,7 +34,7 @@ class AqaraEncrypt:
     def encrypt(self,key,content):
         mode = AES.MODE_CBC
         text = self.add_to_16(content)
-        cryptos = AES.new(key, mode, self.iv)
+        cryptos = AES.new(key.encode('utf-8'), mode, self.iv)
         cipher_text = cryptos.encrypt(text)
         # 因为AES加密后的字符串不一定是ascii字符集的，输出保存可能存在问题，所以这里转为16进制字符串
         tempres = b2a_hex(cipher_text)

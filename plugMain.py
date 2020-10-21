@@ -37,19 +37,19 @@ def on_message(client, userdata, msg):
     if len(str.strip(msgstr)) > 1: #判断报文是否为空
         try:
             msgobj = json.loads(msgstr)
-            findobj = None #存放找到的设备信息
+            findobj = False #存放找到的设备信息
             #1.判断报文中携带的 网关SID是否存在
             for siditem in sensorgateway.sidlist:
                 if siditem['sid'] == msgobj['gatewaysid']:
                     findobj = siditem
                     break
-            if findobj != None:
-                if findobj['token'] != '':
-                    if findobj['sensortype'] == "plug" and (findobj['cmd'] == 'on' or findobj['cmd'] == 'off'):
-                        insstr = sensorplug.writeStatus(findobj['sensorsid'],findobj['key'],findobj['cmd'],findobj["token"])
+            if findobj != False:
+                if findobj['token'] != 0:
+                    if msgobj['sensortype'] == "plug" and (msgobj['cmd'] == 'on' or msgobj['cmd'] == 'off'):
+                        insstr = sensorplug.writeStatus(msgobj['sensorsid'],findobj['key'],msgobj['cmd'],findobj["token"])
                         tempobj = {"gatewaysid":findobj['sid'],"gatewayip":findobj['ip'],"insstr":insstr}
                         msgque.put(tempobj)
-                        print(gendate() + ' 生成控制开关指令--->' + insstr)
+                        print(gendate() + ' 生成控制开关指令--->' + str(tempobj))
                     elif findobj['sensortype'] == "weather" and findobj['cmd'] == 'weather':
                         # insstr = sensorweather.readDevStatus()
                         # msgque.put(insstr)
@@ -61,13 +61,12 @@ def on_message(client, userdata, msg):
                 else:
                     print(gendate() + ' 无法获取正确的网关心跳Token，指令生成失败, 稍后请重试: ' + msgstr)
             else:
-                logger.writeLog(gendate() + ' 未找到要执行操作的设备->'+ msg + '\nReson->'+ msgstr,'mqtt.log')
+                # logger.writeLog(gendate() + ' 未找到要执行操作的设备->'+ msg + '\nReson->'+ msgstr,'mqtt.log')
+                print(gendate() + ' 未找到要执行操作的设备->'+ msg + '\nReson->'+ msgstr)
         except Exception as e:
             logger.writeLog(gendate() + ' MQTT指令格式错误->'+ msg + '\nReson->'+ str(e),'mqtt.log')
     else:
         logger.writeLog(gendate() + ' MQTT指令格式错误->' + '\nReson->'+ msgstr,'mqtt.log')
-
-
 
 
 async def udpclientsend(udpclient,mqttclient):
@@ -90,14 +89,16 @@ async def udpclientsend(udpclient,mqttclient):
                 else:
                     print(data, server_addr)
                     res = json.loads(data)
-                    if res['model'] == 'weather':
-                        if res['cmd'] == 'read_rsp':
+                    if res['cmd'] == 'read_rsp':
+                        if res['model'] == 'weather':
                             mqttinfo = sensorweather.genMQTTinfo(sensorgateway.location,
                                                          res['params'][1]['temperature'],
                                                          res['params'][2]['humidity'],
                                                          res['params'][3]['pressure'],
                                                          res['params'][0]['battery_voltage'])
                             mqttclient.publish(sensorgateway.weatherpubtopic,json.dumps(mqttinfo))
+                    if res['cmd'] == 'write_rsp':
+                        print('命令反馈' + str(res))
                     break
                 i = i + 1
         await asyncio.sleep(0.01)
@@ -125,17 +126,19 @@ async def multirec(multiudp,mqttclient):
         else:
             # print(address)
             res = json.loads(data)
-            if res['model'] == 'weather':
-                if res['cmd'] == 'read_rsp':
+            if res['cmd'] == 'write_rsp':
+                print(res)
+            elif res['cmd'] == 'read_rsp':
+                if res['model'] == 'weather':
                     mqttinfo = sensorweather.genMQTTinfo(sensorgateway.location,
                                                          res['params'][1]['temperature'],
                                                          res['params'][2]['humidity'],
                                                          res['params'][3]['pressure'],
                                                          res['params'][0]['battery_voltage'])
                     mqttclient.publish(sensorweather.mqtttopic,json.dumps(mqttinfo))
-            elif res['model'] == 'plug':
-                if res['cmd'] == 'heartbeat':
-                    pass
+                elif res['model'] == 'plug':
+                    if res['cmd'] == 'heartbeat':
+                        pass
             
             # print(gendate() + '-->' + json.dumps(res))
             for gatewayitem in sensorgateway.sidlist:

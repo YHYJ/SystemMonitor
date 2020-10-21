@@ -5,7 +5,7 @@ gateway:
             sid: 44237c81c7b9
             key: '3547993204669991'
             ip: 127.0.0.1
-            token: 
+            token: 0
             sensorlist:
                 -
                     type: weather
@@ -20,14 +20,16 @@ gateway:
             sid: 5ce50cb659ac
             key: 76b21413ce0375c0
             ip: 127.0.0.1
+            token: 0
             sensorlist:
                 -
-                    type: weather
-                    sid: 158d00045affc8
+                    type: plug
+                    sid: 158d0003938af3
         -   
             sid: 50ec50c6e724
             key: 73410326c0424831
             ip: 127.0.0.1
+            token: 0
             sensorlist:
                 -
                     type: weather
@@ -36,6 +38,7 @@ gateway:
             sid: 5ce50cb69474
             key: 25d3520269b5a844
             ip: 127.0.0.1
+            token: 0
             sensorlist:
                 -
                     type: weather
@@ -44,10 +47,11 @@ gateway:
             sid: 5ce50cb68a0b
             key: 319533829e7777f9
             ip: 127.0.0.1
+            token: 0
             sensorlist:
                 -
-                    type: weather
-                    sid: 158d00045affc5
+                    type: plug
+                    sid: 158d0003c767fe
 
     iv: 17996d093d28ddb3ba695a2e6f58562e
     location: A1
