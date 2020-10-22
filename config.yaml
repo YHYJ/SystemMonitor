@@ -95,7 +95,7 @@ modbus:
         holdingreg:
             addrcode: 1  #地址码
             startaddr: 2  #数据起始地址
-            datalen: 1  #数据长度
+            datalen: 2  #数据长度
         damrange: 20 #DAM通道量程
         damexpand: 1.2 #DAM通道量程扩大值
         minma: 4 #最低电流值

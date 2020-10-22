@@ -84,23 +84,6 @@ class MODBUSclient:
                               baudrate = self.baudrate)
         return self.client
     
-    def genMQTTinfo(self, location, noise=0, temp=0, humi=0, waterpress=0):
-        '''
-        生成MQTT发布报文
-        {"location":"F1","decibel":332}
-        '''
-        if self.devtype == 'noise':
-            info = {"location":location,"decibel":noise}
-        elif self.devtype == 'pt100':
-            info = {"location":location,"pt100":temp}
-        elif self.devtype == 'temphumi':
-            info = {"location":location,"temp":temp,"humi":humi}
-        elif self.devtype == 'pressure':
-            info = {"location":location,"pressure":waterpress}
-        else:
-            info = 'genMQTTinfo error : not find match Device'
-        return info
-    
     def calcRealTemprature(self,temprature):
         '''
         devtype == pt100
@@ -125,20 +108,23 @@ class MODBUSclient:
         if self.devtype == 'noise':
             decibel = int(rr.registers[0])
             print(self.gendate() + ':当前噪声值----> ' + str(decibel/10))
-            mqttinfo = self.genMQTTinfo(location = self.location,noise = decibel)
+            mqttinfo = {"location":self.location,"decibel":decibel}
         elif self.devtype == 'pt100':
-            temprature = rr.registers[0]
-            reltemp = self.calcRealTemprature(temprature)
-            print(self.gendate() + ':当前PT100测量温度值----> ' + str(reltemp))
-            mqttinfo = self.genMQTTinfo(location = self.location,temp = int(reltemp*100))
+            mqttinfo = []
+            for i in range(0, self.datalen):
+                temprature = rr.registers[i]
+                reltemp = self.calcRealTemprature(temprature)
+                print(self.gendate() + ':当前序号为' + str(i) + '的PT100测量温度值----> ' + str(reltemp))
+                tempinfo = {"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i)}
+                mqttinfo.append(tempinfo)
         elif self.devtype == 'temphumi':
             humi = int(rr.registers[0])
             temp = int(rr.registers[1])
             print(self.gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
-            mqttinfo = self.genMQTTinfo(location = self.location,temp = temp,humi = humi)
+            mqttinfo = {"location":self.location,"temp":temp,"humi":humi}
         elif self.devtype == 'pressure':
             p = int(rr.registers[0])
             pre = round((self.waterpremax - self.waterpremin) / 2000 * p + self.waterpremin,2)
             print(self.gendate() + ':当前压力值----> ' + str(pre))
-            mqttinfo = self.genMQTTinfo(self.location, waterpress = int(pre*100))
+            mqttinfo = {"location":self.location,"pressure":int(pre*100)}
         return mqttinfo
