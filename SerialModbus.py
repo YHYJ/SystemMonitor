@@ -34,7 +34,11 @@ class MODBUSclient:
 
     devtype = 'noise' #默认初始化噪声传感器
     client = None
-    
+
+    #设备ID
+    sid = ''
+    #设备名称
+    devname = ''
 
     def __init__(self,devtype="noise"):
         '''
@@ -47,29 +51,32 @@ class MODBUSclient:
             fstream = f.read()
             configobj = yaml.safe_load(fstream)
             #通用部分
-            self.unit = configobj['modbus'][devtype]['unit']
-            self.method = configobj['modbus'][devtype]['method']
-            self.port = configobj['modbus'][devtype]['port']
-            self.timeout = configobj['modbus'][devtype]['timeout']
-            self.baudrate = configobj['modbus'][devtype]['baudrate']
-            self.pubtopic = configobj['modbus'][devtype]['pubtopic']
-            self.location = configobj['modbus'][devtype]['location']
-            self.interval = configobj['modbus'][devtype]['interval']
-            self.addrcode = configobj['modbus'][devtype]['holdingreg']['addrcode']
-            self.startaddr = configobj['modbus'][devtype]['holdingreg']['startaddr']
-            self.datalen = configobj['modbus'][devtype]['holdingreg']['datalen']
+            self.sid = configobj['uartmodbus'][devtype]['sid']
+            self.devname = configobj['uartmodbus'][devtype]['devname']
+            self.unit = configobj['uartmodbus'][devtype]['unit']
+            self.method = configobj['uartmodbus'][devtype]['method']
+            self.port = configobj['uartmodbus'][devtype]['port']
+            self.timeout = configobj['uartmodbus'][devtype]['timeout']
+            self.baudrate = configobj['uartmodbus'][devtype]['baudrate']
+            self.pubtopic = configobj['uartmodbus'][devtype]['pubtopic']
+            self.location = configobj['uartmodbus'][devtype]['location']
+            self.interval = configobj['uartmodbus'][devtype]['interval']
+            self.addrcode = configobj['uartmodbus'][devtype]['holdingreg']['addrcode']
+            self.startaddr = configobj['uartmodbus'][devtype]['holdingreg']['startaddr']
+            self.datalen = configobj['uartmodbus'][devtype]['holdingreg']['datalen']
+            
 
             if devtype == 'pt100':
-                self.damrange = configobj['modbus'][devtype]['damrange']
-                self.damexpand = configobj['modbus'][devtype]['damexpand']
-                self.minma = configobj['modbus'][devtype]['minma'] #最低电流值
-                self.mapercelsius = configobj['modbus'][devtype]['mapercelsius'] #对应电流
+                self.damrange = configobj['uartmodbus'][devtype]['damrange']
+                self.damexpand = configobj['uartmodbus'][devtype]['damexpand']
+                self.minma = configobj['uartmodbus'][devtype]['minma'] #最低电流值
+                self.mapercelsius = configobj['uartmodbus'][devtype]['mapercelsius'] #对应电流
             if devtype == 'pressure':
-                self.waterpremax = configobj['modbus'][devtype]['waterpremax']
-                self.waterpremin = configobj['modbus'][devtype]['waterpremin']
+                self.waterpremax = configobj['uartmodbus'][devtype]['waterpremax']
+                self.waterpremin = configobj['uartmodbus'][devtype]['waterpremin']
             
         except Exception as e:
-            logger.writeLog("串口modbus组件初始化失败-->" + str(e),'modbus.log')
+            logger.writeLog("串口uartmodbus组件初始化失败-->" + str(e),'uartmodbus.log')
     
     def gendate(self):
         '''
@@ -108,23 +115,23 @@ class MODBUSclient:
         if self.devtype == 'noise':
             decibel = int(rr.registers[0])
             print(self.gendate() + ':当前噪声值----> ' + str(decibel/10))
-            mqttinfo = {"location":self.location,"decibel":decibel}
+            mqttinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"decibel":decibel}
         elif self.devtype == 'pt100':
             mqttinfo = []
             for i in range(0, self.datalen):
                 temprature = rr.registers[i]
                 reltemp = self.calcRealTemprature(temprature)
                 print(self.gendate() + ':当前序号为' + str(i) + '的PT100测量温度值----> ' + str(reltemp))
-                tempinfo = {"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i)}
+                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i)}
                 mqttinfo.append(tempinfo)
         elif self.devtype == 'temphumi':
             humi = int(rr.registers[0])
             temp = int(rr.registers[1])
             print(self.gendate() + ':当前温度湿度值----> ' + str(temp/10) +' '+ str(humi/10))
-            mqttinfo = {"location":self.location,"temp":temp,"humi":humi}
+            mqttinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"temp":temp,"humi":humi}
         elif self.devtype == 'pressure':
             p = int(rr.registers[0])
             pre = round((self.waterpremax - self.waterpremin) / 2000 * p + self.waterpremin,2)
             print(self.gendate() + ':当前压力值----> ' + str(pre))
-            mqttinfo = {"location":self.location,"pressure":int(pre*100)}
+            mqttinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"pressure":int(pre*100)}
         return mqttinfo

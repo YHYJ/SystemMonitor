@@ -12,7 +12,7 @@ udp->mqtt
 ```shell
 python udpMain.py
 ```
-Modbus串口模式
+#### Modbus串口模式
 
 ***注意：如果运行python uartMain.py不加 -device参数，则默认以噪声传感器方式运行***
 
@@ -38,6 +38,17 @@ python uartMain.py -device=temphumi
 ```shell
 python uartMain.py -device=pressure
 ```
+
+
+
+#### Modbus TCP模式
+
+- hpu数据采集
+
+```
+python tcpMain.py
+```
+
 
 
 ### 依赖库列表

@@ -5,7 +5,6 @@ from Encrypt import AqaraEncrypt
 
 # 所有设备通用的方法
 class AqaraDev:
-    sid = '' #设备标识号
     aqaencrypt = AqaraEncrypt() # AES CBC 128为加密对象
 
     # 单播发现设备

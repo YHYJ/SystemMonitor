@@ -2,56 +2,14 @@ gateway:
     port: 9898
     sidlist: 
         -
-            sid: 44237c81c7b9
-            key: '3547993204669991'
-            ip: 127.0.0.1
+            sid: 5ce50cb659ac
+            key: '319533829e7777f9'
+            ip: 192.168.3.11
             token: 0
             sensorlist:
-                -
-                    type: weather
-                    sid: 158d00045affc9
                 -
                     type: leak
-                    sid: 158d00023aa605
-                -
-                    type: plug
-                    sid: 158d0003938af3
-        -
-            sid: 5ce50cb659ac
-            key: 76b21413ce0375c0
-            ip: 127.0.0.1
-            token: 0
-            sensorlist:
-                -
-                    type: plug
-                    sid: 158d0003938af3
-        -   
-            sid: 50ec50c6e724
-            key: 73410326c0424831
-            ip: 127.0.0.1
-            token: 0
-            sensorlist:
-                -
-                    type: weather
-                    sid: 158d00045affc7
-        -
-            sid: 5ce50cb69474
-            key: 25d3520269b5a844
-            ip: 127.0.0.1
-            token: 0
-            sensorlist:
-                -
-                    type: weather
-                    sid: 158d00045affc6
-        -
-            sid: 5ce50cb68a0b
-            key: 319533829e7777f9
-            ip: 127.0.0.1
-            token: 0
-            sensorlist:
-                -
-                    type: plug
-                    sid: 158d0003c767fe
+                    sid: 158d000452f1f7
 
     iv: 17996d093d28ddb3ba695a2e6f58562e
     location: A1
@@ -65,18 +23,20 @@ udp:
     port: 9898
 
 mqtt:
-    host: 127.0.0.1
+    host: 192.168.3.5
     port: 1883
     keepalive: 60
 
-modbus:
+uartmodbus:
     noise:
+        sid: noise001
+        devname: 噪声北
         unit: 1
         method: rtu
         port: COM3
         timeout: 1
         baudrate: 9600
-        pubtopic: sensor/uart/noise
+        pubtopic: sensor/noise
         location: A1
         interval: 1 #采集间隔时间每1s一次
         holdingreg:
@@ -84,12 +44,14 @@ modbus:
             startaddr: 0  #数据起始地址
             datalen: 1  #数据长度 
     pt100:
+        sid: pt001
+        devname: 水温001
         unit: 1
         method: rtu
         port: COM3
         timeout: 1
         baudrate: 9600
-        pubtopic: sensor/uart/pt100
+        pubtopic: sensor/pt100
         location: A1
         interval: 1 #采集间隔时间每1s一次
         holdingreg:
@@ -101,12 +63,14 @@ modbus:
         minma: 4 #最低电流值
         mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
     temphumi:
+        sid: wheather001
+        devname: 气象1
         unit: 1
         method: rtu
         port: COM3
         timeout: 1
         baudrate: 4800
-        pubtopic: sensor/uart/temphumi
+        pubtopic: sensor/wheather
         location: A1
         interval: 1 #采集间隔时间每1s一次
         holdingreg:
@@ -114,12 +78,14 @@ modbus:
             startaddr: 0  #数据起始地址
             datalen: 2  #数据长度
     pressure:
+        sid: pressure001
+        devname: 压力001
         unit: 1
         method: rtu
         port: COM5
         timeout: 1
         baudrate: 9600
-        pubtopic: sensor/uart/pressure
+        pubtopic: sensor/waterpressure
         location: A1
         interval: 1 #压力值采集间隔时间每3s一次
         holdingreg:
@@ -128,4 +94,86 @@ modbus:
             datalen: 1  #数据长度
         waterpremax: 1.6   # 压力值上限
         waterpremin: 0    # 压力值下限
+
+tcpmodbus:
+    hpu:
+        sid: hpu001
+        devname: HPU001
+        unit: 1
+        method: tcp
+        iplist: 
+            - 
+                192.168.100.1
+        port: 502
+        interval: 3 #采集频率 秒/次
+        pubtopic: sensor/hpu
+        location: A2
+        addrcode: 1  #地址码
+        startaddr: 430  #数据起始地址
+        datalen: 50  #数据长度
+        maptable: 
+            - 
+                name: temperature #温度
+                startaddr: 431
+                datalen: 1
+            - 
+                name: flow  #流量*10
+                startaddr: 433
+                datalen: 1
+            - 
+                name: pressure  #压力*10
+                startaddr: 434
+                datalen: 1
+            - 
+                name: pumps_running_num  #泵开动个数
+                startaddr: 437
+                datalen: 1
+            - 
+                name: pumps_total_num  #泵总个数
+                startaddr: 438
+                datalen: 1
+            -
+                name: pump_total_running_time  #累计运行时长
+                startaddr: 440
+                datalen: 2
+            -
+                name: pump1_running_time  #泵1运行小时*10
+                startaddr: 442
+                datalen: 2
+            -
+                name: pump2_running_time  #泵2运行小时*10
+                startaddr: 444
+                datalen: 2
+            -
+                name: pump3_running_time  #泵3运行小时*10
+                startaddr: 446
+                datalen: 2
+            -
+                name: pump4_running_time  #泵4运行小时*10
+                startaddr: 448
+                datalen: 2
+            -
+                name: pump5_running_time  #泵5运行小时*10
+                startaddr: 450
+                datalen: 2
+            -
+                name: pump6_running_time  #泵6运行小时*10
+                startaddr: 452
+                datalen: 2
+            - 
+                name: pump_total_running_time2  #累计运行时长2
+                startaddr: 456
+                datalen: 2
+            - 
+                name: pump1_6_status  #泵1-6状态 13开启 1关闭
+                startaddr: 462
+                datalen: 6
+            -
+                name: pump1_6_status_model #泵1-6状态模式 4高压7自动
+                startaddr: 468
+                datalen: 6
+            - 
+                name: pump_total_status #泵总状态
+                startaddr: 474
+                datalen: 1
     
