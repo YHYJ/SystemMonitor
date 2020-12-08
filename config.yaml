@@ -23,7 +23,7 @@ udp:
     port: 9898
 
 mqtt:
-    host: 192.168.3.5
+    host: 127.0.0.1
     port: 1883
     keepalive: 60
 
@@ -38,7 +38,7 @@ uartmodbus:
         baudrate: 9600
         pubtopic: sensor/noise
         location: A1
-        interval: 1 #采集间隔时间每1s一次
+        interval: 3 #采集间隔时间每1s一次
         holdingreg:
             addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
@@ -105,7 +105,7 @@ tcpmodbus:
             - 
                 192.168.100.1
         port: 502
-        interval: 3 #采集频率 秒/次
+        interval: 4 #采集频率 秒/次
         pubtopic: sensor/hpu
         location: A2
         addrcode: 1  #地址码

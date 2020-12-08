@@ -5,6 +5,7 @@ import json
 import time
 import queue
 import argparse
+import logger
 
 msgque = queue.Queue(0)
 devtype = '' #设备类型
@@ -13,7 +14,7 @@ def gendate():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    logger.writeLog(gendate() + ' MQTT连接成功->'+ str(rc),'tcpMain.log')
     client.subscribe("cmd")
 
 def on_message(client, userdata, msg):
@@ -22,13 +23,13 @@ def on_message(client, userdata, msg):
 
 def on_disconnect(client, userdata, rc):
     if rc != 0:
-        print("Unexpected disconnection.")
+        logger.writeLog(gendate() + ' MQTT连接断开','tcpMain.log')
 
 async def runModbusClient(modbusclient,modbusobj,mqttclient):
     try:
         modbusclient.connect()
     except Exception as e:
-        print(gendate() + ' Modbus连接失败！' + str(e))
+        logger.writeLog(gendate() + ' Modbus连接失败！'+ str(e),'tcpMain.log')
     
     while True:
         try:

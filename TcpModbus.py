@@ -75,7 +75,7 @@ class MODBUSclient:
         '''
         计算管道，用于对不同的modbus设备进行计算，并返回测量的数值
         '''
-        mqttsendobj = {"sid":self.sid,"devname":self.devname,"devid":self.devid,"val":[]}
+        mqttsendobj = {"sid":self.sid,"devname":self.devname,"location":self.location,"val":[]}
         if self.devtype == 'hpu':
             '''
             如果是HPU则需要根据配置文件中的对照表来进行解码赋值
