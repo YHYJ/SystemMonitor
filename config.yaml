@@ -23,7 +23,7 @@ udp:
     port: 9898
 
 mqtt:
-    host: 127.0.0.1
+    host: 10.94.213.140
     port: 1883
     keepalive: 60
 
@@ -40,7 +40,6 @@ uartmodbus:
         location: A1
         interval: 3 #采集间隔时间每1s一次
         holdingreg:
-            addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
             datalen: 1  #数据长度 
     pt100:
@@ -55,7 +54,6 @@ uartmodbus:
         location: A1
         interval: 1 #采集间隔时间每1s一次
         holdingreg:
-            addrcode: 1  #地址码
             startaddr: 2  #数据起始地址
             datalen: 2  #数据长度
         damrange: 20 #DAM通道量程
@@ -63,18 +61,17 @@ uartmodbus:
         minma: 4 #最低电流值
         mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
     temphumi:
-        sid: wheather001
-        devname: 气象1
+        sid: weather001
+        devname: 温湿度传感器
         unit: 1
         method: rtu
-        port: COM3
+        port: /dev/ttyUSB0
         timeout: 1
         baudrate: 4800
-        pubtopic: sensor/wheather
-        location: A1
-        interval: 1 #采集间隔时间每1s一次
+        pubtopic: sensor/weather
+        location: HR009
+        interval: 20 #采集间隔时间每1s一次
         holdingreg:
-            addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
             datalen: 2  #数据长度
     pressure:
@@ -89,7 +86,6 @@ uartmodbus:
         location: A1
         interval: 1 #压力值采集间隔时间每3s一次
         holdingreg:
-            addrcode: 1  #地址码
             startaddr: 1  #数据起始地址
             datalen: 1  #数据长度
         waterpremax: 1.6   # 压力值上限
@@ -108,7 +104,6 @@ tcpmodbus:
         interval: 4 #采集频率 秒/次
         pubtopic: sensor/hpu
         location: A2
-        addrcode: 1  #地址码
         startaddr: 430  #数据起始地址
         datalen: 50  #数据长度
         maptable: 

@@ -13,7 +13,7 @@ def gendate():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    print("MQTT服务器连接成功")
     client.subscribe("cmd")
 
 def on_message(client, userdata, msg):

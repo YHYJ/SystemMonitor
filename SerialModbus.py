@@ -15,7 +15,6 @@ class MODBUSclient:
     port = 'COM3'
     timeout = 1
     baudrate = 9600
-    addrcode =  1  #地址码
     startaddr = 0  #数据起始地址
     datalen = 1  #数据长度
     pubtopic = 'sensor/uart/noise'
@@ -61,7 +60,6 @@ class MODBUSclient:
             self.pubtopic = configobj['uartmodbus'][devtype]['pubtopic']
             self.location = configobj['uartmodbus'][devtype]['location']
             self.interval = configobj['uartmodbus'][devtype]['interval']
-            self.addrcode = configobj['uartmodbus'][devtype]['holdingreg']['addrcode']
             self.startaddr = configobj['uartmodbus'][devtype]['holdingreg']['startaddr']
             self.datalen = configobj['uartmodbus'][devtype]['holdingreg']['datalen']
             
