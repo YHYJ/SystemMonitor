@@ -133,18 +133,32 @@ class SysMonitor:
         lista = []
         tempobj = {"name":"","macaddr":"","ipaddr":"", "netmask":""}
         getinfo = psutil.net_if_addrs()
-        for item in getinfo.items():
-            if len(item[1]) > 1:
-                tempobj['name'] = item[0]
-                tempobj['macaddr'] = item[1][0][1]
-                tempobj['ipaddr'] = item[1][1][1]
-                tempobj['netmask'] = item[1][1][2]
-            elif len(item[1]) == 1:
-                tempobj['name'] = item[0]
-                tempobj['macaddr'] = item[1][0][1]
-                tempobj['ipaddr'] = ''
-                tempobj['netmask'] = item[1][0][2]
-            lista.append(copy.deepcopy(tempobj))
+        if self.platform == 'windows':
+            for item in getinfo.items():
+                if len(item[1]) > 1:
+                    tempobj['name'] = item[0]
+                    tempobj['macaddr'] = item[1][0][1]
+                    tempobj['ipaddr'] = item[1][1][1]
+                    tempobj['netmask'] = item[1][1][2]
+                elif len(item[1]) == 1:
+                    tempobj['name'] = item[0]
+                    tempobj['macaddr'] = item[1][0][1]
+                    tempobj['ipaddr'] = ''
+                    tempobj['netmask'] = item[1][0][2]
+                lista.append(copy.deepcopy(tempobj))
+        if self.platform == 'linux':
+            for item in getinfo.items():
+                if len(item[1]) > 1:
+                    tempobj['name'] = item[0]
+                    tempobj['macaddr'] = item[1][1][1]
+                    tempobj['ipaddr'] = item[1][0][1]
+                    tempobj['netmask'] = item[1][1][2]
+                elif len(item[1]) == 1:
+                    tempobj['name'] = item[0]
+                    tempobj['macaddr'] = ''
+                    tempobj['ipaddr'] = item[1][0][1]
+                    tempobj['netmask'] = item[1][0][2]
+                lista.append(copy.deepcopy(tempobj))
         return lista
 
     def genSystemInfo(self):
