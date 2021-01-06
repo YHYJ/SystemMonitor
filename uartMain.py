@@ -1,5 +1,6 @@
 from SerialModbus import MODBUSclient
 from MqttClient import MQTTclient
+from Monitor import SysMonitor
 import asyncio
 import json
 import time
@@ -51,6 +52,11 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
         finally:
             await asyncio.sleep(modbusobj.interval)
 
+async def runSysMonitorClient(monitorobj,mqttclient):
+    while True:
+        await asyncio.sleep(monitorobj.interval)
+        mqttclient.publish(monitorobj.pubtopic,json.dumps(monitorobj.genSystemInfo()))
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Every to MQTT')
@@ -68,8 +74,12 @@ if __name__ == "__main__":
     modbusobj = MODBUSclient(devtype)
     modclient = modbusobj.genModClient()
 
+    monitorobj = SysMonitor()
+
     looper = asyncio.get_event_loop()
     looper.create_task(runModbusClient(modclient,modbusobj,mqclient))
+    if monitorobj.isopen == True:
+        looper.create_task(runSysMonitorClient(monitorobj,mqclient))
 
     mqclient.loop_start()
     looper.run_forever()

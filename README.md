@@ -1,17 +1,33 @@
 # every2mqtt
 
-- 支持将绿米Aqara局域网组播UDP转发至MQTT特定主题下，并且支持控制指令下发时的token自动更新生成；
+- ~~支持将绿米Aqara局域网组播UDP转发至MQTT特定主题下，并且支持控制指令下发时的token自动更新生成；~~(功能迁移至其他程序)
 - 支持将ModbusRTU数据转发至MQTT特定主题下；
+- 支持系统运行状态信息采集用于远程监控
+
+
+
+### 配置文件
+
+配置文件默认开启系统运行状态监控，可通过将isopen改为false关闭
+
+请根据运行系统修改platform名称  windows   或  linux
+
+```yaml
+monitor:
+    isopen: true #是否开启监控
+    platform: windows
+    devid: CR101
+    devname: Nanopi-噪声北  #设备名称
+    pubtopic: monitor #mqtt发布主题
+    interval: 120 #采集频率 /秒
+```
 
 
 
 ### 运行方式
-绿米智能网关
-udp->mqtt     
 
-```shell
-python udpMain.py
-```
+
+
 #### Modbus串口模式
 
 ***注意：如果运行python uartMain.py不加 -device参数，则默认以噪声传感器方式运行***
@@ -55,28 +71,7 @@ python tcpMain.py
 
 - asyncio
 - PyYAML
-- pycryptodome  (在Windows系统下安装)
-- pycrypto  (在Linux系统下安装)
 - paho-mqtt
 - pymodbus
-
-
-
-### 注意事项
-
-- 如果在Linux运行UDP组播程序时遇到
-
-  ```shell
-   errno：19 no such device
-  ```
-
-  请使用**route -n** 查看组播地址是否已添加进路由表，如果没有请使用
-
-  ```shell
-  sudo route add -net 224.0.0.50 netmask 255.255.255.255 eth0
-  ```
-
-  224.0.0.50：为当前使用的多播IP地址
-
-  eth0：为当前使用的有效网卡
+- psutil
 

@@ -1,26 +1,11 @@
-gateway:
-    port: 9898
-    sidlist: 
-        -
-            sid: 5ce50cb659ac
-            key: '319533829e7777f9'
-            ip: 192.168.3.11
-            token: 0
-            sensorlist:
-                -
-                    type: leak
-                    sid: 158d000452f1f7
+monitor:
+    isopen: true #是否开启监控
+    platform: windows
+    devid: CR101
+    devname: Nanopi-噪声北  #设备名称
+    pubtopic: monitor #mqtt发布主题
+    interval: 120 #采集频率 /秒
 
-    iv: 17996d093d28ddb3ba695a2e6f58562e
-    location: A1
-    interval: 30  #采集间隔时间每30s一次
-    weatherpubtopic: sensor/udp/weather
-    leakpubtopic : sensor/udp/leak
-
-udp:
-    bindaddr: 0.0.0.0
-    desip: 224.0.0.50
-    port: 9898
 
 mqtt:
     host: 10.94.213.140
