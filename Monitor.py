@@ -15,7 +15,7 @@ class SysMonitor:
         "devname":'',
         "cpu":0,
         "disk":{},
-        "virtualemory":{},
+        "virtualmemory":{},
         "swapmemory":{},
         "nic":[]
     }
@@ -152,7 +152,7 @@ class SysMonitor:
         self.pubcontent['devname'] = self.devname
         self.pubcontent['cpu'] = self.getCpu()
         self.pubcontent['disk'] = self.getDisk()
-        self.pubcontent['virtualemory'] = self.getVirtualMemory()
+        self.pubcontent['virtualmemory'] = self.getVirtualMemory()
         self.pubcontent['swapmemory'] = self.getSwapMemory()
         self.pubcontent['nic'] = self.getIfconfig()
         return self.pubcontent
