@@ -4,6 +4,7 @@ import logger
 
 class MQTTclient:
     client = None
+    clientid = None
     host = ''
     port = None
     keepalive = None
@@ -20,10 +21,11 @@ class MQTTclient:
             self.host = configobj['mqtt']['host']
             self.port =configobj['mqtt']['port']
             self.keepalive = configobj['mqtt']['keepalive']
+            self.clientid = configobj['mqtt']['clientid']
         except Exception as e:
             logger.writeLog("MQTT组件初始化失败" + str(e),'mqtt.log')
 
     # 生成MQTT客户端
     def genMQTTClient(self):
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(client_id=self.clientid)
         return self.client

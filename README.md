@@ -1,7 +1,6 @@
 # every2mqtt
 
-- ~~支持将绿米Aqara局域网组播UDP转发至MQTT特定主题下，并且支持控制指令下发时的token自动更新生成；~~(功能迁移至其他程序)
-- 支持将ModbusRTU数据转发至MQTT特定主题下；
+- 支持将ModbusRTU及ModbusTCP数据转发至MQTT特定主题下；
 - 支持系统运行状态信息采集用于远程监控
 
 
@@ -30,31 +29,30 @@ monitor:
 
 #### Modbus串口模式
 
-***注意：如果运行python uartMain.py不加 -device参数，则默认以噪声传感器方式运行***
+***注意：如果运行python Main.py不加 -device参数，则默认以噪声传感器方式运行***
 
-​           ***即 python uartMain.py    ====      python uartMain.py -device=noise***
+​           ***即 python Main.py    ====      python Main.py -device=noise***
 
 - 噪声传感器     
 
 ```shell
-python uartMain.py -device=noise
+python Main.py -device=noise
 ```
 - 贴片式温度传感器
 
 ```shell
-python uartMain.py -device=pt100
+python Main.py -device=pt100
 ```
 - 建大仁科温湿度传感器
 
 ```shell
-python uartMain.py -device=temphumi
+python Main.py -device=temphumi
 ```
 - 水压传感器
 
 ```shell
-python uartMain.py -device=pressure
+python Main.py -device=pressure
 ```
-
 
 
 #### Modbus TCP模式
@@ -62,7 +60,7 @@ python uartMain.py -device=pressure
 - hpu数据采集
 
 ```
-python tcpMain.py
+python Main.py -device=hpu
 ```
 
 

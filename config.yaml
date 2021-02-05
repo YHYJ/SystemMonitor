@@ -11,6 +11,7 @@ mqtt:
     host: 10.94.213.140
     port: 1883
     keepalive: 60
+    clientid: test121
 
 uartmodbus:
     noise:
@@ -23,8 +24,9 @@ uartmodbus:
         baudrate: 9600
         pubtopic: sensor/noise
         location: A1
-        interval: 3 #采集间隔时间每1s一次
+        interval: 6 #采集间隔时间每1s一次
         holdingreg:
+            addrcode: 1  #地址码
             startaddr: 0  #数据起始地址
             datalen: 1  #数据长度 
     pt100:
@@ -52,7 +54,7 @@ uartmodbus:
         method: rtu
         port: /dev/ttyUSB0
         timeout: 1
-        baudrate: 4800
+        baudrate: 9600
         pubtopic: sensor/weather
         location: HR009
         interval: 20 #采集间隔时间每1s一次
@@ -89,6 +91,7 @@ tcpmodbus:
         interval: 4 #采集频率 秒/次
         pubtopic: sensor/hpu
         location: A2
+        addrcode: 1  #地址码
         startaddr: 430  #数据起始地址
         datalen: 50  #数据长度
         maptable: 
