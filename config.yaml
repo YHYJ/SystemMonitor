@@ -1,6 +1,5 @@
 monitor:
     isopen: true #是否开启监控
-    platform: windows
     devid: CR101
     devname: Nanopi-噪声北  #设备名称
     pubtopic: monitor #mqtt发布主题

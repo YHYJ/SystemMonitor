@@ -2,10 +2,12 @@ import psutil
 import yaml
 import logger
 import copy
+import os
+import sys
 
 class SysMonitor:
     platform = 'linux' #平台/部分参数 windows及 linux不同
-    isopen = True
+    isopen = False
     pubtopic = 'monitor'
     interval = 120
     devid = ''
@@ -29,7 +31,13 @@ class SysMonitor:
             f = open("config.yaml","r+",encoding="utf-8")
             fstream = f.read()
             configobj = yaml.safe_load(fstream)
-            self.platform = configobj['monitor']['platform']
+            if os.name == 'nt':
+                platform = 'windows'
+            elif os.name == 'posix':
+                platform = 'linux'
+            else:
+                platform = 'linux'
+            self.platform = platform
             self.isopen =configobj['monitor']['isopen']
             self.pubtopic = configobj['monitor']['pubtopic']
             self.interval = configobj['monitor']['interval']
@@ -170,3 +178,18 @@ class SysMonitor:
         self.pubcontent['swapmemory'] = self.getSwapMemory()
         self.pubcontent['nic'] = self.getIfconfig()
         return self.pubcontent
+    
+
+    # 更改配置参数
+    def updateConfig(self):
+        #1.修改参数
+        #2.修改本地配置文件并返回修改结果（用于向调用方反馈信息）
+        return True
+    
+    # 重启程序
+    def restartProgram(self):
+        python = sys.executable
+        if self.platform == 'windows':
+            os.execl(python, '"' + python + '"', os.path.realpath(__file__))
+        elif self.platform == 'linux':
+            os.execl(python, python, os.path.realpath(__file__))
