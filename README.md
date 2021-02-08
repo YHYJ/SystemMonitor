@@ -9,12 +9,13 @@
 
 配置文件默认开启系统运行状态监控，可通过将isopen改为false关闭
 
-请根据运行系统修改platform名称  windows   或  linux
+~~请根据运行系统修改platform名称  windows   或  linux~~
+
+已修改为自动获取系统信息，无需配置文件修改
 
 ```yaml
 monitor:
     isopen: true #是否开启监控
-    platform: windows
     devid: CR101
     devname: Nanopi-噪声北  #设备名称
     pubtopic: monitor #mqtt发布主题
