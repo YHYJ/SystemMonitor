@@ -66,6 +66,26 @@ python Main.py -device=hpu
 
 
 
+### 远程控制
+
+程序会自动订阅cmd/all及cmd/devid主题，通过此主题可以批量（cmd/all）及单独修改边缘设备的配置文件
+
+控制报文如下
+
+```json
+{
+    "attr":"mqtt",
+    "value":{
+                  "host":"127.0.0.1",
+                  "port": 1883,
+                  "keepalive":60,
+                  "clientid": "test12111"
+   }
+}
+```
+
+
+
 ### 依赖库列表
 
 - asyncio

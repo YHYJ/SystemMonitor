@@ -4,6 +4,7 @@ import logger
 import copy
 import os
 import sys
+import time
 
 class SysMonitor:
     platform = 'linux' #平台/部分参数 windows及 linux不同
@@ -21,6 +22,8 @@ class SysMonitor:
         "swapmemory":{},
         "nic":[]
     }
+    feedbacktopic = 'cmd/feedback'
+    configobj = None
     
     def __init__(self):
         '''
@@ -30,7 +33,7 @@ class SysMonitor:
             # 读取配置文件
             f = open("config.yaml","r+",encoding="utf-8")
             fstream = f.read()
-            configobj = yaml.safe_load(fstream)
+            self.configobj = yaml.safe_load(fstream)
             if os.name == 'nt':
                 platform = 'windows'
             elif os.name == 'posix':
@@ -38,11 +41,12 @@ class SysMonitor:
             else:
                 platform = 'linux'
             self.platform = platform
-            self.isopen =configobj['monitor']['isopen']
-            self.pubtopic = configobj['monitor']['pubtopic']
-            self.interval = configobj['monitor']['interval']
-            self.devid = configobj['monitor']['devid']
-            self.devname = configobj['monitor']['devname']
+            self.isopen =self.configobj['monitor']['isopen']
+            self.pubtopic = self.configobj['monitor']['pubtopic']
+            self.interval = self.configobj['monitor']['interval']
+            self.devid = self.configobj['monitor']['devid']
+            self.devname = self.configobj['monitor']['devname']
+            self.feedbacktopic = self.configobj['monitor']['feedbacktopic'] #执行远程指令反馈
         except Exception as e:
             logger.writeLog("Monitor组件初始化失败" + str(e))
     
@@ -181,15 +185,27 @@ class SysMonitor:
     
 
     # 更改配置参数
-    def updateConfig(self):
+    def updateConfig(self, attr, content):
         #1.修改参数
         #2.修改本地配置文件并返回修改结果（用于向调用方反馈信息）
-        return True
+        flag = False
+        if attr in self.configobj.keys(): #如果存在属性值
+            if content != None or content != '':
+                self.configobj[attr] = content
+                with open('config.yaml', "w", encoding="utf-8") as f:
+                    yaml.safe_dump(self.configobj, f, allow_unicode=True)
+                flag = True
+            else:
+                logger.writeLog("更新配置文件参数失败,更新属性->" + str(attr) +" 的内容为空->" + str(content))
+        else:
+            logger.writeLog("更新配置文件参数失败,配置文件不存在属性为->" + str(attr) +" 内容为->" + str(content))
+        
+        return flag
     
     # 重启程序
-    def restartProgram(self):
+    def restartProgram(self, filepath):
         python = sys.executable
         if self.platform == 'windows':
-            os.execl(python, '"' + python + '"', os.path.realpath(__file__))
+            os.execl(python, '"' + python + '"', filepath)
         elif self.platform == 'linux':
-            os.execl(python, python, os.path.realpath(__file__))
+            os.execl(python, python, filepath)

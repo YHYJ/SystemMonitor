@@ -1,161 +1,140 @@
 monitor:
-    isopen: true #是否开启监控
-    devid: CR101
-    devname: Nanopi-噪声北  #设备名称
-    pubtopic: monitor #mqtt发布主题
-    interval: 120 #采集频率 /秒
-
-
+  devid: CR344
+  devname: Nanopi噪声
+  feedbacktopic: cmd/feedback
+  interval: 120
+  isopen: true
+  pubtopic: monitor
 mqtt:
-    host: 10.94.213.140
-    port: 1883
-    keepalive: 60
-    clientid: test121
-
-uartmodbus:
-    noise:
-        sid: noise001
-        devname: 噪声北
-        unit: 1
-        method: rtu
-        port: COM3
-        timeout: 1
-        baudrate: 9600
-        pubtopic: sensor/noise
-        location: A1
-        interval: 6 #采集间隔时间每1s一次
-        holdingreg:
-            addrcode: 1  #地址码
-            startaddr: 0  #数据起始地址
-            datalen: 1  #数据长度 
-    pt100:
-        sid: pt001
-        devname: 水温001
-        unit: 1
-        method: rtu
-        port: COM3
-        timeout: 1
-        baudrate: 9600
-        pubtopic: sensor/pt100
-        location: A1
-        interval: 1 #采集间隔时间每1s一次
-        holdingreg:
-            startaddr: 2  #数据起始地址
-            datalen: 2  #数据长度
-        damrange: 20 #DAM通道量程
-        damexpand: 1.2 #DAM通道量程扩大值
-        minma: 4 #最低电流值
-        mapercelsius: 0.32 #对应电流为(20-4)/50=0.32mA/℃
-    temphumi:
-        sid: weather001
-        devname: 温湿度传感器
-        unit: 1
-        method: rtu
-        port: /dev/ttyUSB0
-        timeout: 1
-        baudrate: 9600
-        pubtopic: sensor/weather
-        location: HR009
-        interval: 20 #采集间隔时间每1s一次
-        holdingreg:
-            startaddr: 0  #数据起始地址
-            datalen: 2  #数据长度
-    pressure:
-        sid: pressure001
-        devname: 压力001
-        unit: 1
-        method: rtu
-        port: COM5
-        timeout: 1
-        baudrate: 9600
-        pubtopic: sensor/waterpressure
-        location: A1
-        interval: 1 #压力值采集间隔时间每3s一次
-        holdingreg:
-            startaddr: 1  #数据起始地址
-            datalen: 1  #数据长度
-        waterpremax: 1.6   # 压力值上限
-        waterpremin: 0    # 压力值下限
-
+  clientid: test121
+  host: 127.0.0.1
+  keepalive: 60
+  port: 1883
 tcpmodbus:
-    hpu:
-        sid: hpu001
-        devname: HPU001
-        unit: 1
-        method: tcp
-        iplist: 
-            - 
-                192.168.100.1
-        port: 502
-        interval: 4 #采集频率 秒/次
-        pubtopic: sensor/hpu
-        location: A2
-        addrcode: 1  #地址码
-        startaddr: 430  #数据起始地址
-        datalen: 50  #数据长度
-        maptable: 
-            - 
-                name: temperature #温度
-                startaddr: 431
-                datalen: 1
-            - 
-                name: flow  #流量*10
-                startaddr: 433
-                datalen: 1
-            - 
-                name: pressure  #压力*10
-                startaddr: 434
-                datalen: 1
-            - 
-                name: pumps_running_num  #泵开动个数
-                startaddr: 437
-                datalen: 1
-            - 
-                name: pumps_total_num  #泵总个数
-                startaddr: 438
-                datalen: 1
-            -
-                name: pump_total_running_time  #累计运行时长
-                startaddr: 440
-                datalen: 2
-            -
-                name: pump1_running_time  #泵1运行小时*10
-                startaddr: 442
-                datalen: 2
-            -
-                name: pump2_running_time  #泵2运行小时*10
-                startaddr: 444
-                datalen: 2
-            -
-                name: pump3_running_time  #泵3运行小时*10
-                startaddr: 446
-                datalen: 2
-            -
-                name: pump4_running_time  #泵4运行小时*10
-                startaddr: 448
-                datalen: 2
-            -
-                name: pump5_running_time  #泵5运行小时*10
-                startaddr: 450
-                datalen: 2
-            -
-                name: pump6_running_time  #泵6运行小时*10
-                startaddr: 452
-                datalen: 2
-            - 
-                name: pump_total_running_time2  #累计运行时长2
-                startaddr: 456
-                datalen: 2
-            - 
-                name: pump1_6_status  #泵1-6状态 13开启 1关闭
-                startaddr: 462
-                datalen: 6
-            -
-                name: pump1_6_status_model #泵1-6状态模式 4高压7自动
-                startaddr: 468
-                datalen: 6
-            - 
-                name: pump_total_status #泵总状态
-                startaddr: 474
-                datalen: 1
-    
+  hpu:
+    addrcode: 1
+    datalen: 50
+    devname: HPU001
+    interval: 4
+    iplist:
+    - 192.168.100.1
+    location: A2
+    maptable:
+    - datalen: 1
+      name: temperature
+      startaddr: 431
+    - datalen: 1
+      name: flow
+      startaddr: 433
+    - datalen: 1
+      name: pressure
+      startaddr: 434
+    - datalen: 1
+      name: pumps_running_num
+      startaddr: 437
+    - datalen: 1
+      name: pumps_total_num
+      startaddr: 438
+    - datalen: 2
+      name: pump_total_running_time
+      startaddr: 440
+    - datalen: 2
+      name: pump1_running_time
+      startaddr: 442
+    - datalen: 2
+      name: pump2_running_time
+      startaddr: 444
+    - datalen: 2
+      name: pump3_running_time
+      startaddr: 446
+    - datalen: 2
+      name: pump4_running_time
+      startaddr: 448
+    - datalen: 2
+      name: pump5_running_time
+      startaddr: 450
+    - datalen: 2
+      name: pump6_running_time
+      startaddr: 452
+    - datalen: 2
+      name: pump_total_running_time2
+      startaddr: 456
+    - datalen: 6
+      name: pump1_6_status
+      startaddr: 462
+    - datalen: 6
+      name: pump1_6_status_model
+      startaddr: 468
+    - datalen: 1
+      name: pump_total_status
+      startaddr: 474
+    method: tcp
+    port: 502
+    pubtopic: sensor/hpu
+    sid: hpu001
+    startaddr: 430
+    unit: 1
+uartmodbus:
+  noise:
+    baudrate: 9600
+    devname: 噪声北
+    holdingreg:
+      addrcode: 1
+      datalen: 1
+      startaddr: 0
+    interval: 6
+    location: A1
+    method: rtu
+    port: COM3
+    pubtopic: sensor/noise
+    sid: noise001
+    timeout: 1
+    unit: 1
+  pressure:
+    baudrate: 9600
+    devname: 压力001
+    holdingreg:
+      datalen: 1
+      startaddr: 1
+    interval: 1
+    location: A1
+    method: rtu
+    port: COM5
+    pubtopic: sensor/waterpressure
+    sid: pressure001
+    timeout: 1
+    unit: 1
+    waterpremax: 1.6
+    waterpremin: 0
+  pt100:
+    baudrate: 9600
+    damexpand: 1.2
+    damrange: 20
+    devname: 水温001
+    holdingreg:
+      datalen: 2
+      startaddr: 2
+    interval: 1
+    location: A1
+    mapercelsius: 0.32
+    method: rtu
+    minma: 4
+    port: COM3
+    pubtopic: sensor/pt100
+    sid: pt001
+    timeout: 1
+    unit: 1
+  temphumi:
+    baudrate: 9600
+    devname: 温湿度传感器
+    holdingreg:
+      datalen: 2
+      startaddr: 0
+    interval: 20
+    location: HR009
+    method: rtu
+    port: /dev/ttyUSB0
+    pubtopic: sensor/weather
+    sid: weather001
+    timeout: 1
+    unit: 1

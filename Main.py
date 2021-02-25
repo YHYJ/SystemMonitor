@@ -8,30 +8,45 @@ import time
 import queue
 import argparse
 import logger
+import os
 
 msgque = queue.Queue(0)
 devtype = '' #设备类型
+
+monitorobj = SysMonitor()
+devid = monitorobj.devid
 
 def gendate():
     return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
 def on_connect(client, userdata, flags, rc):
-    logger.writeLog(gendate() + ' MQTT连接成功->'+ str(rc),'tcpMain.log')
-    client.subscribe("cmd")
+    logger.writeLog(gendate() + ' MQTT连接成功->'+ str(rc))
+    client.subscribe("cmd/all")
+    client.subscribe("cmd/" + devid)
+    client.publish(monitorobj.feedbacktopic, '设备 ' + monitorobj.devid + '启动成功!')
 
 def on_message(client, userdata, msg):
-    msgstr = str(msg.payload,'utf-8')
-    print(gendate() + " " + msg.topic+"--->"+ msgstr)
+    try:
+        msgstr = str(msg.payload,'utf-8')
+        if msg.topic == 'cmd/all' or msg.topic == 'cmd/'+devid: #读取到指令
+            print(gendate() + " " + msg.topic+"--->"+ msgstr)
+            content = json.loads(msgstr)
+            res = monitorobj.updateConfig(content['attr'],content['value'])
+            if res:
+                filepathstr = os.path.realpath(__file__)
+                monitorobj.restartProgram(filepathstr)
+    except Exception as e:
+        logger.writeLog(gendate() + ' 修改配置文件失败->' + str(e))
 
 def on_disconnect(client, userdata, rc):
     if rc != 0:
-        logger.writeLog(gendate() + ' MQTT连接断开','tcpMain.log')
+        logger.writeLog(gendate() + ' MQTT连接断开')
 
 async def runModbusClient(modbusclient,modbusobj,mqttclient):
     try:
         modbusclient.connect()
     except Exception as e:
-        logger.writeLog(gendate() + ' Modbus连接失败！'+ str(e),'tcpMain.log')
+        logger.writeLog(gendate() + ' Modbus连接失败！'+ str(e))
     
     while True:
         try:
@@ -82,8 +97,6 @@ if __name__ == "__main__":
     else: #其余默认为RTU模式
         modbusobj = SModebus(devtype)
         modclient = modbusobj.genModClient()
-
-    monitorobj = SysMonitor()
 
     looper = asyncio.get_event_loop()
     looper.create_task(runModbusClient(modclient,modbusobj,mqclient))    
