@@ -68,7 +68,11 @@ python Main.py -device=hpu
 
 ### 远程控制
 
-程序会自动订阅cmd/all及cmd/devid主题，通过此主题可以批量（cmd/all）及单独修改边缘设备的配置文件
+程序会自动订阅cmd/all及cmd/devid主题，
+
+通过  **cmd/all**  主题可以批量修改边缘设备的配置文件
+
+通过 **cmd/devid** 主题可以单独修改特定边缘设备的配置文件
 
 控制报文如下
 
