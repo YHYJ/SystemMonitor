@@ -23,7 +23,7 @@ def on_connect(client, userdata, flags, rc):
     logger.writeLog(gendate() + ' MQTT连接成功->'+ str(rc))
     client.subscribe("cmd/all")
     client.subscribe("cmd/" + devid)
-    client.publish(monitorobj.feedbacktopic, '设备 ' + monitorobj.devid + '启动成功!')
+    client.publish(monitorobj.feedbacktopic, json.dumps({"devid":monitorobj.devid,"info":"启动成功", "date":gendate()}))
 
 def on_message(client, userdata, msg):
     try:

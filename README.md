@@ -84,6 +84,16 @@ python Main.py -device=hpu
 }
 ```
 
+程序启动成功后，会在 cmd/feedback 主题下发布反馈报文如下
+
+```json
+{
+  "devid" : "CR344",
+  "info" : "启动成功",
+  "date" : "2021-02-26 09:33:16"
+}
+```
+
 
 
 ### 依赖库列表

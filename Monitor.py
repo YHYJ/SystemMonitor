@@ -185,20 +185,20 @@ class SysMonitor:
     
 
     # 更改配置参数
-    def updateConfig(self, attr, content):
+    def updateConfig(self, attr, value):
         #1.修改参数
         #2.修改本地配置文件并返回修改结果（用于向调用方反馈信息）
         flag = False
         if attr in self.configobj.keys(): #如果存在属性值
-            if content != None or content != '':
-                self.configobj[attr] = content
+            if value != None or value != '':
+                self.configobj[attr] = value
                 with open('config.yaml', "w", encoding="utf-8") as f:
                     yaml.safe_dump(self.configobj, f, allow_unicode=True)
                 flag = True
             else:
-                logger.writeLog("更新配置文件参数失败,更新属性->" + str(attr) +" 的内容为空->" + str(content))
+                logger.writeLog("更新配置文件参数失败,更新属性->" + str(attr) +" 的内容为空->" + str(value))
         else:
-            logger.writeLog("更新配置文件参数失败,配置文件不存在属性为->" + str(attr) +" 内容为->" + str(content))
+            logger.writeLog("更新配置文件参数失败,配置文件不存在属性为->" + str(attr) +" 内容为->" + str(value))
         
         return flag
     
