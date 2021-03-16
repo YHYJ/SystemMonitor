@@ -9,6 +9,7 @@ class MODBUSclient:
     (1)noise(噪声) 
     (2)pt100(贴片式温度传感器)
     (3)temphumi(温湿度传感器-建大仁科)
+    (4)ampere(精量电子电流传感器)
     '''
     unit = 0x1
     method = 'rtu'
@@ -25,7 +26,7 @@ class MODBUSclient:
     damrange = 20 #DAM通道量程
     damexpand = 1.2 #DAM通道量程扩大值
     minma = 4 #最低电流值
-    mapercelsius = 0.32 #对应电流为(20-4)/50=0.32mA/℃
+    mappedvalue = 0.32 #对应电流为(20-4)/50=0.32mA/℃
 
      #水压
     waterpremax = 1.6
@@ -64,11 +65,11 @@ class MODBUSclient:
             self.datalen = configobj['uartmodbus'][devtype]['holdingreg']['datalen']
             
 
-            if devtype == 'pt100':
+            if devtype == 'pt100' or devtype == 'ampere':
                 self.damrange = configobj['uartmodbus'][devtype]['damrange']
                 self.damexpand = configobj['uartmodbus'][devtype]['damexpand']
                 self.minma = configobj['uartmodbus'][devtype]['minma'] #最低电流值
-                self.mapercelsius = configobj['uartmodbus'][devtype]['mapercelsius'] #对应电流
+                self.mappedvalue = configobj['uartmodbus'][devtype]['mappedvalue'] #对应电流
             if devtype == 'pressure':
                 self.waterpremax = configobj['uartmodbus'][devtype]['waterpremax']
                 self.waterpremin = configobj['uartmodbus'][devtype]['waterpremin']
@@ -89,19 +90,20 @@ class MODBUSclient:
                               baudrate = self.baudrate)
         return self.client
     
-    def calcRealTemprature(self,temprature):
+    def calcDamRealValue(self,inputvalue):
         '''
         devtype == pt100
+        devtype == ampere
         根据DAM-7082说明书公式计算正确的4-20mA电流值，并根据配置的区间
-        计算正确的温度值
+        计算正确的传感器数值
         电流真实val = Adata/0x7FFF * range * 120%
         0x7FFF = 32767
         '''
-        symbol = temprature & 0x8000 #symbol = 0为正数 =1为负数
-        temp = temprature & 0x7FFF #将最高位符号位赋值为0(避免对计算结果影响)
+        symbol = inputvalue & 0x8000 #symbol = 0为正数 =1为负数
+        temp = inputvalue & 0x7FFF #将最高位符号位赋值为0(避免对计算结果影响)
         temp = temp/32767 * self.damrange * self.damexpand 
         reltemp = temp - self.minma
-        reltemp = round(reltemp / self.mapercelsius,2) #保留2位小数
+        reltemp = round(reltemp / self.mappedvalue,2) #保留2位小数
         if symbol == 1:
             reltemp = 0 - reltemp
         return reltemp
@@ -118,9 +120,17 @@ class MODBUSclient:
             mqttinfo = []
             for i in range(0, self.datalen):
                 temprature = rr.registers[i]
-                reltemp = self.calcRealTemprature(temprature)
+                reltemp = self.calcDamRealValue(temprature)
                 print(self.gendate() + ':当前序号为' + str(i) + '的PT100测量温度值----> ' + str(reltemp))
                 tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i)}
+                mqttinfo.append(tempinfo)
+        elif self.devtype == 'ampere':
+            mqttinfo = []
+            for i in range(0, self.datalen):
+                ampere = rr.registers[i]
+                relampere = self.calcDamRealValue(ampere)
+                print(self.gendate() + ':当前序号为' + str(i) + '的电流传感器测量值为----> ' + str(relampere))
+                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"ampere":int(relampere*100),"serialno":'pt'+str(i)}
                 mqttinfo.append(tempinfo)
         elif self.devtype == 'temphumi':
             humi = int(rr.registers[0])

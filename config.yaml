@@ -1,12 +1,12 @@
 monitor:
-  devid: CR344
-  devname: Nanopi噪声
+  devid: HR010
+  devname: Nanopi冷却水水温
   feedbacktopic: cmd/feedback
   interval: 120
   isopen: true
-  pubtopic: monitor
+  pubtopic: eim/monitor
 mqtt:
-  clientid: test12111131
+  clientid: hpuwatertemp01
   host: 127.0.0.1
   keepalive: 60
   port: 1883
@@ -70,7 +70,7 @@ tcpmodbus:
       startaddr: 474
     method: tcp
     port: 502
-    pubtopic: sensor/hpu
+    pubtopic: sensor/hpu/plc
     sid: hpu001
     startaddr: 430
     unit: 1
@@ -100,7 +100,7 @@ uartmodbus:
     location: A1
     method: rtu
     port: COM5
-    pubtopic: sensor/waterpressure
+    pubtopic: sensor/hpu/waterpressure
     sid: pressure001
     timeout: 1
     unit: 1
@@ -110,18 +110,36 @@ uartmodbus:
     baudrate: 9600
     damexpand: 1.2
     damrange: 20
-    devname: 水温001
+    devname: 油泵间冷却水水温
     holdingreg:
-      datalen: 2
+      datalen: 12
       startaddr: 2
     interval: 1
-    location: A1
-    mapercelsius: 0.32
+    location: HPU油泵间
+    mappedvalue: 0.32
     method: rtu
     minma: 4
     port: COM3
-    pubtopic: sensor/pt100
-    sid: pt001
+    pubtopic: sensor/hpu/watertemp
+    sid: pt100
+    timeout: 1
+    unit: 1
+  ampere: #电流
+    baudrate: 9600
+    damexpand: 1.2
+    damrange: 20
+    devname: 油泵间电流
+    holdingreg:
+      datalen: 1
+      startaddr: 2
+    interval: 2
+    location: HPU油泵间
+    mappedvalue: 0.16
+    method: rtu
+    minma: 4
+    port: COM3
+    pubtopic: sensor/hpu/ampere
+    sid: ampere001
     timeout: 1
     unit: 1
   temphumi:

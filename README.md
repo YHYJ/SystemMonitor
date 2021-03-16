@@ -14,7 +14,7 @@ monitor:
     isopen: true #是否开启监控
     devid: CR101
     devname: Nanopi-噪声北  #设备名称
-    pubtopic: monitor #mqtt发布主题
+    pubtopic: eim/monitor #mqtt发布主题
     interval: 120 #采集频率 /秒
 ```
 
@@ -51,12 +51,17 @@ python Main.py -device=temphumi
 python Main.py -device=pressure
 ```
 
+- HPU电流传感器
+
+```shell
+python Main.py -device=ampere
+```
 
 #### Modbus TCP模式
 
 - hpu数据采集
 
-```
+```shell
 python Main.py -device=hpu
 ```
 
