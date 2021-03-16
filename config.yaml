@@ -73,7 +73,8 @@ tcpmodbus:
     pubtopic: sensor/hpu/plc
     sid: hpu001
     startaddr: 430
-    unit: 1
+    unit: 
+     - 1
 uartmodbus:
   noise:
     baudrate: 9600
@@ -89,7 +90,8 @@ uartmodbus:
     pubtopic: sensor/noise
     sid: noise001
     timeout: 1
-    unit: 1
+    units: 
+      - 1
   pressure:
     baudrate: 9600
     devname: 压力001
@@ -103,7 +105,8 @@ uartmodbus:
     pubtopic: sensor/hpu/waterpressure
     sid: pressure001
     timeout: 1
-    unit: 1
+    units: 
+      - 1
     waterpremax: 1.6
     waterpremin: 0
   pt100:
@@ -123,7 +126,8 @@ uartmodbus:
     pubtopic: sensor/hpu/watertemp
     sid: pt100
     timeout: 1
-    unit: 1
+    units: 
+      - 1
   ampere: #电流
     baudrate: 9600
     damexpand: 1.2
@@ -141,7 +145,9 @@ uartmodbus:
     pubtopic: sensor/hpu/ampere
     sid: ampere001
     timeout: 1
-    unit: 1
+    units:
+     - 1
+     - 2
   temphumi:
     baudrate: 9600
     devname: 温湿度传感器
@@ -155,4 +161,5 @@ uartmodbus:
     pubtopic: sensor/weather
     sid: weather001
     timeout: 1
-    unit: 1
+    units: 
+      - 1

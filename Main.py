@@ -50,10 +50,11 @@ async def runModbusClient(modbusclient,modbusobj,mqttclient):
     
     while True:
         try:
-            rr = modbusclient.read_holding_registers(modbusobj.startaddr, modbusobj.datalen, unit=modbusobj.unit)
-            if rr.registers:
-                mqttinfo = modbusobj.calcpipe(rr)
-                mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
+            for item in modbusobj.units:
+                rr = modbusclient.read_holding_registers(modbusobj.startaddr, modbusobj.datalen, unit=item)
+                if rr.registers:
+                    mqttinfo = modbusobj.calcpipe(rr,item)
+                    mqttclient.publish(modbusobj.pubtopic,json.dumps(mqttinfo))
         except Exception as e:
             print(gendate() + ' Modbus连接异常，尝试重新连接！' + str(e))
             try:

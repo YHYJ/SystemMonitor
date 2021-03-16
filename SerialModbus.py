@@ -11,7 +11,7 @@ class MODBUSclient:
     (3)temphumi(温湿度传感器-建大仁科)
     (4)ampere(精量电子电流传感器)
     '''
-    unit = 0x1
+    units = []
     method = 'rtu'
     port = 'COM3'
     timeout = 1
@@ -53,7 +53,7 @@ class MODBUSclient:
             #通用部分
             self.sid = configobj['uartmodbus'][devtype]['sid']
             self.devname = configobj['uartmodbus'][devtype]['devname']
-            self.unit = configobj['uartmodbus'][devtype]['unit']
+            self.units = configobj['uartmodbus'][devtype]['units']
             self.method = configobj['uartmodbus'][devtype]['method']
             self.port = configobj['uartmodbus'][devtype]['port']
             self.timeout = configobj['uartmodbus'][devtype]['timeout']
@@ -108,9 +108,9 @@ class MODBUSclient:
             reltemp = 0 - reltemp
         return reltemp
 
-    def calcpipe(self,rr):
+    def calcpipe(self,rr,item):
         '''
-        计算管道，用于对不同的modbus设备进行计算，并返回测量的数值
+        计算管道，用于对不同的modbus设备进行计算，并返回测量的数值,item为modbus位置
         '''
         if self.devtype == 'noise':
             decibel = int(rr.registers[0])
@@ -121,16 +121,16 @@ class MODBUSclient:
             for i in range(0, self.datalen):
                 temprature = rr.registers[i]
                 reltemp = self.calcDamRealValue(temprature)
-                print(self.gendate() + ':当前序号为' + str(i) + '的PT100测量温度值----> ' + str(reltemp))
-                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i)}
+                print(self.gendate() + ':地址号: '+str(item) +' 当前序号为' + str(i+1) + '的PT100测量温度值----> ' + str(reltemp))
+                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"pt100":int(reltemp*100),"serialno":'pt'+str(i+1)}
                 mqttinfo.append(tempinfo)
         elif self.devtype == 'ampere':
             mqttinfo = []
             for i in range(0, self.datalen):
                 ampere = rr.registers[i]
                 relampere = self.calcDamRealValue(ampere)
-                print(self.gendate() + ':当前序号为' + str(i) + '的电流传感器测量值为----> ' + str(relampere))
-                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"ampere":int(relampere*100),"serialno":'pt'+str(i)}
+                print(self.gendate() + ':地址号: '+str(item) +' 当前序号为' + str(i+1) + '的电流传感器测量值为----> ' + str(relampere))
+                tempinfo = {"sid":self.sid,"devname":self.devname,"location":self.location,"ampere":int(relampere*100),"serialno":str(item)+ '-' + str(i+1)}
                 mqttinfo.append(tempinfo)
         elif self.devtype == 'temphumi':
             humi = int(rr.registers[0])
