@@ -29,12 +29,7 @@ monitor_interval = monitor_conf.get('interval', 300)
 # outputer config           -- 数据输出器配置
 outputer_conf = config.get('outputer', dict())
 outputer_switch = outputer_conf.get('switch', True)
-output_to = outputer_conf.get('output_to', 'console')
-# saver config              -- 数据存储器配置
-saver_conf = config.get('saver', dict())
-saver_switch = saver_conf.get('switch', True)
-save_to = saver_conf.get('save_to', 'text')
-saver_fields = saver_conf.get(save_to, dict())
+outputer_selector = outputer_conf.get('outputer_selector', 'console')
 # log config                -- 日志记录器配置
 log_conf = config.get('log', dict())
 logger = logging.getLogger('SystemMonitor.main')
@@ -47,11 +42,12 @@ logger.info('Create a system monitor client')
 # outputer client           -- 数据输出器客户端
 outputer_client = None
 if outputer_switch:
-    if output_to.lower() == 'mqtt':
-        outputer_client = MqttClient(conf=outputer_conf.get(output_to, dict()))
-    elif output_to.lower() == 'console':
+    if outputer_selector.lower() == 'mqtt':
+        outputer_client = MqttClient(
+            conf=outputer_conf.get(outputer_selector, dict()))
+    elif outputer_selector.lower() == 'console':
         outputer_client = ConsoleClient()
-logger.info('Create a outputer({name}) client'.format(name=output_to))
+logger.info('Create a outputer({name}) client'.format(name=outputer_selector))
 
 
 async def run_systemmonitor():
@@ -61,10 +57,6 @@ async def run_systemmonitor():
         if monitor_switch:
             # 获取格式化后的监视器数据
             systeminfo = systemmonitor_client.main()
-            # 增补监视器数据
-            for key, value in saver_fields.items():
-                if key not in systeminfo.keys():
-                    systeminfo[key] = value
             # 检查数据输出器客户端状态
             if outputer_client:
                 # 输出数据

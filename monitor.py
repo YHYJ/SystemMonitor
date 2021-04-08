@@ -59,6 +59,12 @@ class SystemMonitor(object):
         outputer_conf = config.get('outputer', dict())
         self.output_format = outputer_conf.get('output_format', 'console')
 
+        # decorator config          -- 数据装饰器配置
+        decorator_conf = config.get('decorator', dict())
+        decorator_selector = decorator_conf.get('selector', 'text')
+        self.decorator_switch = decorator_conf.get('switch', False)
+        self.decorator_fields = decorator_conf.get(decorator_selector, dict())
+
     @staticmethod
     def _bool2int(boolean):
         """布尔值转换为整数
@@ -273,8 +279,16 @@ class SystemMonitor(object):
         :returns: 监视数据
 
         """
+        # 获取原始监视数据
         information = self.get_all_info()
-        result = formatting(format_target=self.output_format, data=information)
+
+        # 格式化原始监视数据
+        if self.decorator_switch:
+            result = formatting(data=information,
+                                format_target=self.output_format,
+                                decorate_conf=self.decorator_fields)
+        else:
+            result = information
 
         return result
 

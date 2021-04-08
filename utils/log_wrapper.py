@@ -35,12 +35,12 @@ def setup_logging(conf):
     logfile = conf['log_file']  # log file save position
     max_size = conf['max_size']  # size of each log file
     backup_count = conf['backup_count']  # count of log files
-    format_string = conf['format_string']  # log format
+    log_format = conf['format']  # log format
 
     logger = logging.getLogger('SystemMonitor')
     logger.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter(format_string, datefmt='%Y-%m-%d %H:%M:%S')
+    formatter = logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
 
     if file:
         # 如果 log 文本不存在，创建文本

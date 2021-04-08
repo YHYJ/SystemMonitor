@@ -10,28 +10,35 @@ Description: 数据格式化工具
 """
 
 
-def formatting(format_target, data):
+def formatting(data, format_target, decorate_conf):
     """将数据进行格式化
 
-    :format_target: 格式化目标
     :data: 待格式化数据
+    :format_target: 格式化目标
+    :decorate_conf: 数据装饰器配置
     :returns: 已格式化数据
 
     """
-    if format_target in ['console']:
-        # TODO: 数据格式处理 <02-04-21, YJ> #
-        result = data
-    elif format_target in ['mqtt']:
-        # TODO: 数据格式处理 <02-04-21, YJ> #
-        result = data
-    else:
-        result = data
+    # 生成数据装饰器条目
+    decorate_fields = dict()
+    for key, value in decorate_conf.items():
+        if key not in data.keys():
+            decorate_fields[key] = value
 
-    return result
+    # 根据格式化目标将原始数据进行格式化
+    if format_target.lower() in ['console']:
+        data.update(decorate_fields)
+    elif format_target.lower() in ['mqtt']:
+        data.update(decorate_fields)
+
+    return data
 
 
 if __name__ == "__main__":
-    target = 'json'
+    target = 'console'
     data = {'output': 'example'}
-    result = formatting(format_target=target, data=data)
+    decorate_conf = {'module_name': 'formatter'}
+    result = formatting(data=data,
+                        format_target=target,
+                        decorate_conf=decorate_conf)
     print(result)
