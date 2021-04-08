@@ -229,7 +229,7 @@ class SystemMonitor(object):
         return info
 
     def get_process_info(self):
-        """获取进程信息ff
+        """获取进程信息
         :returns: A list, processes information
 
         """
