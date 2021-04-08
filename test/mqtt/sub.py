@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     # subscribe参数
     qos = 0
-    topics = ['topic', 'topic_1']
+    topics = ['system/monitor']
 
     # 创建客户端
     client = mqtt.Client()
