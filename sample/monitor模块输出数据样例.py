@@ -2,8 +2,8 @@
     'timestamp': '2021-04-08 10:25:05',
     'deviceid': 'Test',
     'devicename': 'Test-machine',
-    'filename': 'system_monitor_data.txt',
-    'mode': 'add',
+    'schema': 'public',
+    'table': 'example',
     'fields': {
         'cpu': {
             'percent': 12.5
