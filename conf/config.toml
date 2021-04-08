@@ -49,7 +49,7 @@ outputer_selector = 'console'               # CHANGED: 'console'/'mqtt' -- 选�
 switch = true                               # NOTE: 数据装饰器开关
 decorator_selector = 'text'                 # CHANGED: 'text'/'postgresql' -- 选择数据装饰器
     [decorator.text]                        # 数据装饰器二
-    filename = 'system_monitor_data.text'   # CHANGED: 数据存储的文件名
+    filename = 'system_monitor_data.txt'    # CHANGED: 数据存储的文件名
     mode = 'add'                            # CHANGED: 'add'/'write' -- 文件写入模式，追加或覆写
     [decorator.postgresql]                  # 数据装饰器一
     schema = 'public'                       # CHANGED: 数据存储的Schema名

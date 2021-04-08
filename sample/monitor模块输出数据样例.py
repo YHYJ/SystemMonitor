@@ -1,25 +1,25 @@
 {
-    'timestamp': '2021-04-07 19:08:44',
+    'timestamp': '2021-04-08 10:25:05',
     'deviceid': 'Test',
     'devicename': 'Test-machine',
-    'schema': 'public',
-    'table': 'example',
+    'filename': 'system_monitor_data.txt',
+    'mode': 'add',
     'fields': {
         'cpu': {
-            'percent': 16.7
+            'percent': 12.5
         },
         'memory': {
             'total': 15.5,
-            'available': 11.0,
-            'percent': 29.2,
-            'used': 3.7,
-            'free': 2.9,
-            'active': 2.5,
-            'inactive': 8.8,
-            'buffers': 0.7,
-            'cached': 8.2,
-            'shared': 0.7,
-            'slab': 0.7
+            'available': 13.4,
+            'percent': 13.4,
+            'used': 1.5,
+            'free': 10.6,
+            'active': 1.2,
+            'inactive': 3.1,
+            'buffers': 0.5,
+            'cached': 3.0,
+            'shared': 0.3,
+            'slab': 0.3
         },
         'swap': {
             'total': 0.0,
@@ -31,9 +31,9 @@
         },
         'disk': {
             'total': 233.2,
-            'used': 26.0,
-            'free': 195.3,
-            'percent': 11.7
+            'used': 26.1,
+            'free': 195.2,
+            'percent': 11.8
         },
         'nic': [{
             'name': 'lo',
@@ -45,36 +45,11 @@
             'macaddr': '34:41:5d:83:07:2f',
             'ipaddr': '192.168.3.9',
             'netmask': '255.255.255.0'
-        }, {
-            'name': 'br-ee09acc11259',
-            'macaddr': '02:42:75:2f:ba:fd',
-            'ipaddr': '172.18.0.1',
-            'netmask': '255.255.0.0'
-        }, {
-            'name': 'docker0',
-            'macaddr': '02:42:8e:ea:17:ff',
-            'ipaddr': '172.17.0.1',
-            'netmask': '255.255.0.0'
-        }, {
-            'name': 'br-11f6f5c55c56',
-            'macaddr': '02:42:d9:ae:d7:d3',
-            'ipaddr': '172.19.0.1',
-            'netmask': '255.255.0.0'
-        }, {
-            'name': 'vethb7f8fc8',
-            'macaddr': '4a:ed:2c:98:08:12',
-            'ipaddr': '',
-            'netmask': ''
-        }, {
-            'name': 'vethd325ea9',
-            'macaddr': '12:f4:f9:90:67:16',
-            'ipaddr': '',
-            'netmask': ''
         }],
         'process': [{
             'name': 'python',
             'keyword': 'main',
-            'pid': 1584104,
+            'pid': 783982,
             'status': 'running',
             'running': 1
         }]
