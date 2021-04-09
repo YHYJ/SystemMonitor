@@ -275,7 +275,7 @@ class SystemMonitor(object):
 
         information['timestamp'] = self._timestamp_gen()
         information['deviceid'] = self.custom_id
-        information['devicename'] = self.custom_name
+        information['fields']['device'] = {'name': self.custom_name}
         information['fields']['cpu'] = self.get_cpu_info()
         information['fields']['memory'] = self.get_memory_info()
         information['fields']['swap'] = self.get_swap_info()

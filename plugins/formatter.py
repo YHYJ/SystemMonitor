@@ -9,6 +9,10 @@ Created Time: 2021-04-07 10:00:31
 Description: 数据格式化工具
 """
 
+import logging
+
+logger = logging.getLogger('SystemMonitor.plugins.formatter')
+
 
 def formatting(data, format_target, decorate_conf):
     """将数据进行格式化
@@ -21,15 +25,69 @@ def formatting(data, format_target, decorate_conf):
     """
     # 生成数据装饰器条目
     decorate_fields = dict()
-    for key, value in decorate_conf.items():
+    for key, field_value in decorate_conf.items():
         if key not in data.keys():
-            decorate_fields[key] = value
+            decorate_fields[key] = field_value
 
-    # 根据格式化目标将原始数据进行格式化
-    if format_target.lower() in ['console']:
-        data.update(decorate_fields)
-    elif format_target.lower() in ['mqtt']:
-        data.update(decorate_fields)
+    if isinstance(data, dict):
+        if format_target.lower() in ['console']:
+            # 添加装饰数据
+            data.update(decorate_fields)
+        elif format_target.lower() in ['mqtt']:
+            # 获取到未经处理的fields
+            raw_fields = data.pop('fields', dict())
+            # 定义处理后的fields变量
+            new_fields = dict()
+            # 格式化数据
+            for prefix, fields in raw_fields.items():
+                if prefix in ['process']:
+                    for field in fields:
+                        if isinstance(field, dict):
+                            postfix = field.get('keyword', str())
+                            field_name = '{}_{}'.format(prefix, postfix)
+                            field_value = field.get('running', 0)
+                            field_type = 'float'
+                            new_fields[field_name] = {
+                                'name': field_name,
+                                'value': field_value,
+                                'type': field_type
+                            }
+                        else:
+                            logger.warning("‘process’ data error, discard")
+                else:
+                    if isinstance(fields, dict):
+                        for postfix, field_value in fields.items():
+                            field_name = '{}_{}'.format(prefix, postfix)
+                            if isinstance(field_value, (int, float)):
+                                field_type = 'float'
+                            elif isinstance(field_value, (list, dict)):
+                                field_type = 'json'
+                            else:
+                                field_type = 'str'
+
+                            new_fields[field_name] = {
+                                'name': field_name,
+                                'value': field_value,
+                                'type': field_type
+                            }
+                    elif isinstance(fields, list):
+                        field_name = '{}'.format(prefix)
+                        field_value = fields
+                        field_type = 'json'
+
+                        new_fields[field_name] = {
+                            'name': field_name,
+                            'value': field_value,
+                            'type': field_type
+                        }
+
+            # 重组格式化后的数据
+            data['fields'] = new_fields
+
+            # 添加装饰数据
+            data.update(decorate_fields)
+    else:
+        logger.error('The type of data must be dict')
 
     return data
 
