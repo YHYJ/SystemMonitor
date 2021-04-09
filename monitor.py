@@ -16,7 +16,7 @@ import time
 import psutil
 import toml
 
-from utils.formatter import formatting
+from plugins.formatter import formatting
 
 logger = logging.getLogger('SystemMonitor.monitor')
 
@@ -50,6 +50,8 @@ class SystemMonitor(object):
         self.disk_path = monitor_disk_conf.get('path', '/')
         self.disk_format = monitor_disk_conf.get('format', 'GB')
         self.disk_digit = monitor_disk_conf.get('digit', 1)
+        # monitor.nic config        -- 网卡信息配置
+        self.monitor_nic_conf = monitor_conf.get('nic', dict())
         # monitor.process config    -- 进程信息配置
         monitor_process_conf = monitor_conf.get('process', dict())
         self.process_names = monitor_process_conf.get('names', list())
@@ -205,7 +207,8 @@ class SystemMonitor(object):
         :returns: A list, NICs information
 
         """
-        info = list()
+        info_nic = list()
+        info_mac = dict()
 
         # 获取网卡信息
         nicinfo = psutil.net_if_addrs()
@@ -218,15 +221,25 @@ class SystemMonitor(object):
         for name, datas in nicinfo.items():
             cache = {'name': '', 'macaddr': '', 'ipaddr': '', 'netmask': ''}
             cache['name'] = name
+            mac = dict()
             for data in datas:
                 if data.family.name == 'AF_INET':
                     cache['ipaddr'] = data.address
                     cache['netmask'] = data.netmask
                 elif data.family.name == locate:
                     cache['macaddr'] = data.address
-            info.append(cache)
+                    for key, value in self.monitor_nic_conf.items():
+                        if name == value:
+                            mac[key] = data.address
+            info_nic.append(cache)
+            info_mac.update(mac)
 
-        return info
+        # 构建返回值
+        result = dict()
+        result['nic'] = info_nic
+        result['mac'] = info_mac
+
+        return result
 
     def get_process_info(self):
         """获取进程信息
@@ -267,7 +280,8 @@ class SystemMonitor(object):
         information['fields']['memory'] = self.get_memory_info()
         information['fields']['swap'] = self.get_swap_info()
         information['fields']['disk'] = self.get_disk_info()
-        information['fields']['nic'] = self.get_nic_info()
+        information['fields']['nic'] = self.get_nic_info().get('nic', list())
+        information['fields']['mac'] = self.get_nic_info().get('mac', dict())
         information['fields']['process'] = self.get_process_info()
 
         logger.info('Successfully get system information')

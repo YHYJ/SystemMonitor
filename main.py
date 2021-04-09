@@ -16,7 +16,7 @@ import toml
 
 from monitor import SystemMonitor
 from utils.log_wrapper import setup_logging
-from utils.outputer import ConsoleClient, MqttClient
+from utils.io_wrapper import ConsoleClient, MqttClient
 
 # load configuration file
 confile = 'conf/config.toml'

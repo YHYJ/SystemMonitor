@@ -24,6 +24,9 @@ interval = 5                                # CHANGED: 监视器运行周期（�
     path = '/'                              # NOTE: 要监控的磁盘的挂载点
     format = 'GB'                           # NOTE: 以'KB', 'MB'或'GB'格式输出
     digit = 1                               # NOTE: 最终结果精确度
+    [monitor.nic]                           # 网卡监视器配置
+    wan = 'eth0'                            # CHANGED: WAN网卡的接口名
+    lan = 'eth1'                            # CHANGED: LAN网卡的接口名
     [monitor.process]                       # 进程监视器配置
     names = ['python']                      # CHANGED: 需要监视的进程名列表
     keywords = ['main', 'monitor']          # CHANGED: 需要监视的进程的命令行关键字列表

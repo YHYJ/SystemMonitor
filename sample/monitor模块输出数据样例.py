@@ -1,25 +1,25 @@
 {
-    'timestamp': '2021-04-08 10:25:05',
+    'timestamp': '2021-04-09 15:52:06',
     'deviceid': 'Test',
     'devicename': 'Test-machine',
     'schema': 'public',
     'table': 'example',
     'fields': {
         'cpu': {
-            'percent': 12.5
+            'percent': 0.0
         },
         'memory': {
             'total': 15.5,
-            'available': 13.4,
-            'percent': 13.4,
-            'used': 1.5,
-            'free': 10.6,
-            'active': 1.2,
-            'inactive': 3.1,
-            'buffers': 0.5,
-            'cached': 3.0,
-            'shared': 0.3,
-            'slab': 0.3
+            'available': 12.4,
+            'percent': 19.8,
+            'used': 2.4,
+            'free': 10.7,
+            'active': 0.6,
+            'inactive': 3.8,
+            'buffers': 0.2,
+            'cached': 2.2,
+            'shared': 0.4,
+            'slab': 0.2
         },
         'swap': {
             'total': 0.0,
@@ -31,9 +31,9 @@
         },
         'disk': {
             'total': 233.2,
-            'used': 26.1,
-            'free': 195.2,
-            'percent': 11.8
+            'used': 27.0,
+            'free': 194.3,
+            'percent': 12.2
         },
         'nic': [{
             'name': 'lo',
@@ -46,10 +46,14 @@
             'ipaddr': '192.168.3.9',
             'netmask': '255.255.255.0'
         }],
+        'mac': {
+            'wan': '00:00:00:00:00:00',
+            'lan': '34:41:5d:83:07:2f'
+        },
         'process': [{
             'name': 'python',
-            'keyword': 'main',
-            'pid': 783982,
+            'keyword': 'monitor',
+            'pid': 91523,
             'status': 'running',
             'running': 1
         }]

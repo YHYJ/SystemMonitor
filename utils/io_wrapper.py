@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-File: outputer.py
+File: io_wrapper.py
 Author: YJ
 Email: yj1516268@outlook.com
 Created Time: 2021-04-07 11:19:20
 
-Description: 向MQTT bridge发布/订阅消息
+Description: 从某一对象输入/输出数据
 """
 
 import json
@@ -14,7 +14,7 @@ import logging
 
 import paho.mqtt.client as Mqtt
 
-logger = logging.getLogger('SystemMonitor.utils.outputer')
+logger = logging.getLogger('SystemMonitor.utils.io_wrapper')
 
 
 class MqttClient(object):
