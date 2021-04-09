@@ -120,8 +120,7 @@
             'type': 'float'
         },
         'nic': {
-            'name':
-            'nic',
+            'name': 'nic',
             'value': [{
                 'name': 'lo',
                 'macaddr': '00:00:00:00:00:00',
@@ -138,8 +137,7 @@
                 'ipaddr': '172.17.0.1',
                 'netmask': '255.255.0.0'
             }],
-            'type':
-            'json'
+            'type': 'json'
         },
         'mac_wan': {
             'name': 'mac_wan',

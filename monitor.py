@@ -63,7 +63,7 @@ class SystemMonitor(object):
 
         # decorator config          -- 数据装饰器配置
         decorator_conf = config.get('decorator', dict())
-        decorator_selector = decorator_conf.get('selector', 'text')
+        decorator_selector = decorator_conf.get('decorator_selector', 'text')
         self.decorator_switch = decorator_conf.get('switch', False)
         self.decorator_fields = decorator_conf.get(decorator_selector, dict())
 
