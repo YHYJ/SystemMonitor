@@ -15,13 +15,17 @@ import logging
 import toml
 
 from monitor import SystemMonitor
-from utils.log_wrapper import setup_logging
 from utils.io_wrapper import ConsoleClient, MqttClient
+from utils.log_wrapper import setup_logging
 
 # load configuration file
 confile = 'conf/config.toml'
 config = toml.load(confile)
 
+# app config                -- 程序配置
+app_conf = config.get('app', dict())
+app_name = app_conf.get('name', 'SystemMonitor')
+app_version = app_conf.get('version', None)
 # monitor config            -- 监视器配置
 monitor_conf = config.get('monitor', dict())
 monitor_switch = monitor_conf.get('switch', False)
@@ -34,6 +38,10 @@ outputer_selector = outputer_conf.get('outputer_selector', 'console')
 log_conf = config.get('log', dict())
 logger = logging.getLogger('SystemMonitor.main')
 setup_logging(log_conf)
+
+# Action
+logger.info('{name}({version}) start running'.format(name=app_name,
+                                                     version=app_version))
 
 # all clients               -- 所有客户端对象
 # syste mmonitor client     -- 系统监视器客户端
