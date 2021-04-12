@@ -24,7 +24,11 @@ class SystemMonitor(object):
     system = platform.system()
 
     def __init__(self, config):
-        """初始化 """
+        """初始化
+
+        :config: 总配置信息
+
+        """
         # monitor config            -- 监视器配置
         monitor_conf = config.get('monitor', dict())
         # monitor.innate config     -- 固有条目配置
