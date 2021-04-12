@@ -28,16 +28,17 @@ def setup_logging(conf):
         "CRITICAL": logging.CRITICAL
     }
 
-    console = conf['console']  # console output?
-    console_level = conf['console_level']  # console log level
-    file = conf['file']  # file output?
-    file_level = conf['file_level']  # file log level
-    logfile = conf['log_file']  # log file save position
-    max_size = conf['max_size']  # size of each log file
-    backup_count = conf['backup_count']  # count of log files
-    log_format = conf['format']  # log format
+    logger_name = conf.get('logger_name', None)  # logger name
+    console = conf.get('console', False)  # console output?
+    console_level = conf.get('console_level', 'DEBUG')  # console log level
+    file = conf.get('file', True)  # file output?
+    file_level = conf.get('file_level', 'WARNING')  # file log level
+    logfile = conf.get('log_file', 'logs/log.log')  # log file save position
+    max_size = conf.get('max_size', 10240000)  # size of each log file
+    backup_count = conf.get('backup_count', 10)  # count of log files
+    log_format = conf.get('format', '%(message)s')  # log format
 
-    logger = logging.getLogger('SystemMonitor')
+    logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S')
