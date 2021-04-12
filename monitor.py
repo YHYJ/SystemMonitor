@@ -18,8 +18,6 @@ import toml
 
 from plugins.formatter import formatting
 
-logger = logging.getLogger('SystemMonitor.monitor')
-
 
 class SystemMonitor(object):
     """系统软硬件信息监视器"""
@@ -73,8 +71,13 @@ class SystemMonitor(object):
         self.decorator_switch = decorator_conf.get('switch', False)
         self.decorator_fields = decorator_conf.get(decorator_selector, dict())
 
-    @staticmethod
-    def _bool2int(boolean):
+        # log config                -- 日志记录器配置
+        log_conf = config.get('log', dict())
+        logger_name = log_conf.get('logger_name', None)
+        self.logger = logging.getLogger(
+            '{logger}.monitor'.format(logger=logger_name))
+
+    def _bool2int(self, boolean):
         """布尔值转换为整数
 
         :boolean: Boolean value
@@ -86,7 +89,7 @@ class SystemMonitor(object):
         try:
             result = int(boolean)
         except Exception as e:
-            logger.error(e)
+            self.logger.error(e)
 
         return result
 
@@ -281,7 +284,7 @@ class SystemMonitor(object):
 
         return info
 
-    def get_all_info(self):
+    def get_info(self):
         """汇总所有信息
         :returns: A dict, all system info
 
@@ -300,7 +303,7 @@ class SystemMonitor(object):
         information['fields']['mac'] = self.get_nic_info().get('mac', dict())
         information['fields']['process'] = self.get_process_info()
 
-        logger.info('Successfully get system information')
+        self.logger.info('Successfully get system information')
 
         return information
 
@@ -310,7 +313,7 @@ class SystemMonitor(object):
 
         """
         # 获取原始监视数据
-        information = self.get_all_info()
+        information = self.get_info()
 
         # 格式化原始监视数据
         if self.decorator_switch:
