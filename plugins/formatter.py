@@ -34,6 +34,9 @@ def formatting(data, format_target, decorate_conf):
             # 添加装饰数据
             data.update(decorate_fields)
         elif format_target.lower() in ['mqtt']:
+            # 添加装饰数据
+            data.update(decorate_fields)
+
             # 获取到未经处理的fields
             raw_fields = data.pop('fields', dict())
             # 定义处理后的fields变量
@@ -83,9 +86,6 @@ def formatting(data, format_target, decorate_conf):
 
             # 重组格式化后的数据
             data['fields'] = new_fields
-
-            # 添加装饰数据
-            data.update(decorate_fields)
     else:
         logger.error('The type of data must be dict')
 

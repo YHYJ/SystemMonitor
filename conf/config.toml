@@ -8,8 +8,12 @@
 [monitor]                                   # 监视器配置: 进行系统参数监视
 switch = true                               # NOTE: 监视器开关
 interval = 5                                # CHANGED: 监视器运行周期（秒）
-    [monitor.custom]                        # CPU监视器配置
+    [monitor.innate]                        # 固有条目配置
     id = 'Test'                             # CHANGED: 监视对象ID
+        [monitor.innate.key]                # 固有条目中key名的配置
+        timestamp = 'recordtime'            # CHANGED: 时间戳条目的key名
+        id = 'deviceid'                     # CHANGED: ID条目的key名
+    [monitor.custom]                        # 自定义信息配置
     name = 'Test-machine'                   # CHANGED: 监视对象名
     [monitor.cpu]                           # CPU监视器配置
     interval = 0                            # NOTE: 以interval前后的CPU时间为基准进行比较，为0则以上次调用以来的CPU时间为基准
@@ -50,7 +54,7 @@ outputer_selector = 'console'               # CHANGED: 'console'/'mqtt' -- 选�
 
 [decorator]                                 # 数据装饰器配置: 用于为数据持久化等目的添加必要的字段
 switch = true                               # NOTE: 数据装饰器开关
-decorator_selector = 'text'                 # CHANGED: 'text'/'postgresql' -- 选择数据装饰器
+decorator_selector = 'postgresql'           # CHANGED: 'text'/'postgresql' -- 选择数据装饰器
     [decorator.text]                        # 数据装饰器二
     filename = 'system_monitor_data.txt'    # CHANGED: 数据存储的文件名
     mode = 'add'                            # CHANGED: 'add'/'write' -- 文件写入模式，追加或覆写

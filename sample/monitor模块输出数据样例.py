@@ -1,5 +1,5 @@
 {
-    'timestamp': '2021-04-09 18:11:06',
+    'recordtime': '2021-04-12 10:22:22',
     'deviceid': 'Test',
     'schema': 'public',
     'table': 'example',
@@ -11,7 +11,7 @@
         },
         'cpu_percent': {
             'name': 'cpu_percent',
-            'value': 17.6,
+            'value': 25.0,
             'type': 'float'
         },
         'memory_total': {
@@ -21,32 +21,32 @@
         },
         'memory_available': {
             'name': 'memory_available',
-            'value': 12.2,
+            'value': 12.7,
             'type': 'float'
         },
         'memory_percent': {
             'name': 'memory_percent',
-            'value': 21.2,
+            'value': 17.9,
             'type': 'float'
         },
         'memory_used': {
             'name': 'memory_used',
-            'value': 2.6,
+            'value': 2.0,
             'type': 'float'
         },
         'memory_free': {
             'name': 'memory_free',
-            'value': 10.1,
+            'value': 11.0,
             'type': 'float'
         },
         'memory_active': {
             'name': 'memory_active',
-            'value': 0.7,
+            'value': 0.8,
             'type': 'float'
         },
         'memory_inactive': {
             'name': 'memory_inactive',
-            'value': 4.3,
+            'value': 3.2,
             'type': 'float'
         },
         'memory_buffers': {
@@ -56,12 +56,12 @@
         },
         'memory_cached': {
             'name': 'memory_cached',
-            'value': 2.6,
+            'value': 2.3,
             'type': 'float'
         },
         'memory_shared': {
             'name': 'memory_shared',
-            'value': 0.4,
+            'value': 0.5,
             'type': 'float'
         },
         'memory_slab': {
@@ -106,17 +106,17 @@
         },
         'disk_used': {
             'name': 'disk_used',
-            'value': 27.0,
+            'value': 26.3,
             'type': 'float'
         },
         'disk_free': {
             'name': 'disk_free',
-            'value': 194.3,
+            'value': 195.1,
             'type': 'float'
         },
         'disk_percent': {
             'name': 'disk_percent',
-            'value': 12.2,
+            'value': 11.9,
             'type': 'float'
         },
         'nic': {
@@ -129,11 +129,11 @@
             }, {
                 'name': 'wlp3s0',
                 'macaddr': '34:41:5d:83:07:2f',
-                'ipaddr': '192.168.3.9',
+                'ipaddr': '192.168.43.139',
                 'netmask': '255.255.255.0'
             }, {
                 'name': 'docker0',
-                'macaddr': '02:42:03:44:af:8c',
+                'macaddr': '02:42:1e:45:f2:6d',
                 'ipaddr': '172.17.0.1',
                 'netmask': '255.255.0.0'
             }],
@@ -149,8 +149,8 @@
             'value': '34:41:5d:83:07:2f',
             'type': 'str'
         },
-        'process_main': {
-            'name': 'process_main',
+        'process_monitor': {
+            'name': 'process_monitor',
             'value': 1,
             'type': 'float'
         }

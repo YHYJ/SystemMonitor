@@ -29,10 +29,16 @@ class SystemMonitor(object):
         """初始化 """
         # monitor config            -- 监视器配置
         monitor_conf = config.get('monitor', dict())
+        # monitor.innate config     -- 固有条目配置
+        monitor_innate_conf = monitor_conf.get('innate', dict())
+        self.innate_id = monitor_innate_conf.get('id', str())
+        # monitor.innate.key config -- 固有条目的key配置
+        monitor_innate_key_conf = monitor_innate_conf.get('key', dict())
+        self.innate_timestamp_key = monitor_innate_key_conf.get(
+            'timestamp', str())
+        self.innate_id_key = monitor_innate_key_conf.get('id', str())
         # monitor.custom config     -- 自定义信息配置
-        monitor_custom_conf = monitor_conf.get('custom', dict())
-        self.custom_id = monitor_custom_conf.get('id', str())
-        self.custom_name = monitor_custom_conf.get('name', str())
+        self.monitor_custom_conf = monitor_conf.get('custom', dict())
         # monitor.cpu config        -- CPU信息配置
         monitor_cpu_conf = monitor_conf.get('cpu', dict())
         self.cpu_interval = monitor_cpu_conf.get('interval', 0)
@@ -95,9 +101,19 @@ class SystemMonitor(object):
 
         return timestamp
 
+    def get_custom_info(self):
+        """获取自定义信息
+        :returns: A dict, some custom information
+
+        """
+        # 获取自定义信息
+        custominfo = self.monitor_custom_conf
+
+        return custominfo
+
     def get_cpu_info(self):
         """获取CPU信息
-        :returns: A float, percentage of current CPU utilization
+        :returns: A dict, percentage of current CPU utilization
 
         """
         info = dict()
@@ -273,9 +289,9 @@ class SystemMonitor(object):
         information = dict()
         information['fields'] = dict()
 
-        information['timestamp'] = self._timestamp_gen()
-        information['deviceid'] = self.custom_id
-        information['fields']['device'] = {'name': self.custom_name}
+        information[self.innate_timestamp_key] = self._timestamp_gen()
+        information[self.innate_id_key] = self.innate_id
+        information['fields']['device'] = self.get_custom_info()
         information['fields']['cpu'] = self.get_cpu_info()
         information['fields']['memory'] = self.get_memory_info()
         information['fields']['swap'] = self.get_swap_info()
