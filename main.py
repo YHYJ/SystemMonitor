@@ -18,6 +18,8 @@ from monitor import SystemMonitor
 from utils.io_wrapper import ConsoleClient, MqttClient
 from utils.log_wrapper import setup_logging
 
+logger = logging.getLogger('SystemMonitor.main')
+
 # load configuration file
 confile = 'conf/config.toml'
 config = toml.load(confile)
@@ -36,8 +38,6 @@ outputer_switch = outputer_conf.get('switch', True)
 outputer_selector = outputer_conf.get('outputer_selector', 'console')
 # log config                -- 日志记录器配置
 log_conf = config.get('log', dict())
-logger_name = log_conf.get('logger_name', None)
-logger = logging.getLogger('{logger}.main'.format(logger=logger_name))
 setup_logging(log_conf)
 
 # Action
