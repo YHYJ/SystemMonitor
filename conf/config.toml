@@ -7,7 +7,7 @@
 
 [app]                                       # 程序配置: 程序本身信息
 name = 'SystemMonitor'                      # NOTE: 程序名
-version = '0.2.1'                           # NOTE: 程序版本
+version = 'v0.2.1'                          # NOTE: 程序版本
 
 
 [monitor]                                   # 监视器配置: 进行系统参数监视
