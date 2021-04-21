@@ -49,16 +49,16 @@ class SystemMonitor(object):
         self.cpu_percpu = monitor_cpu_conf.get('percpu', False)
         # monitor.mem config        -- 内存信息配置
         monitor_mem_conf = monitor_conf.get('mem', dict())
-        self.mem_format = monitor_mem_conf.get('format', 'GB')
+        self.mem_unit = monitor_mem_conf.get('unit', 'GB')
         self.mem_digit = monitor_mem_conf.get('digit', 1)
         # monitor.swap config       -- 交换分区信息配置
         monitor_swap_conf = monitor_conf.get('swap', dict())
-        self.swap_format = monitor_swap_conf.get('format', 'GB')
+        self.swap_unit = monitor_swap_conf.get('unit', 'GB')
         self.swap_digit = monitor_swap_conf.get('digit', 1)
         # monitor.disk config       -- 磁盘信息配置
         monitor_disk_conf = monitor_conf.get('disk', dict())
         self.disk_path = monitor_disk_conf.get('path', '/')
-        self.disk_format = monitor_disk_conf.get('format', 'GB')
+        self.disk_unit = monitor_disk_conf.get('unit', 'GB')
         self.disk_digit = monitor_disk_conf.get('digit', 1)
         # monitor.nic config        -- 网卡信息配置
         self.monitor_nic_conf = monitor_conf.get('nic', dict())
@@ -69,11 +69,11 @@ class SystemMonitor(object):
 
         # outputer config           -- 数据输出器配置
         outputer_conf = config.get('outputer', dict())
-        self.output_format = outputer_conf.get('output_format', 'console')
+        self.output_format = outputer_conf.get('format', 'console')
 
         # decorator config          -- 数据装饰器配置
         decorator_conf = config.get('decorator', dict())
-        decorator_selector = decorator_conf.get('decorator_selector', 'text')
+        decorator_selector = decorator_conf.get('selector', 'text')
         self.decorator_switch = decorator_conf.get('switch', False)
         self.decorator_fields = decorator_conf.get(decorator_selector, dict())
 
@@ -142,11 +142,11 @@ class SystemMonitor(object):
 
         # 原始返回值以bytes表示，自定义输出值的单位（默认GB）
         factor = 3
-        if self.mem_format.upper() == 'GB':
+        if self.mem_unit.upper() == 'GB':
             factor = 3
-        elif self.mem_format.upper() == 'MB':
+        elif self.mem_unit.upper() == 'MB':
             factor = 2
-        elif self.mem_format.upper() == 'KB':
+        elif self.mem_unit.upper() == 'KB':
             factor = 1
         muse = 1024**factor
 
@@ -178,11 +178,11 @@ class SystemMonitor(object):
 
         # 原始返回值以bytes表示，自定义输出值的单位（默认GB）
         factor = 3
-        if self.swap_format.upper() == 'GB':
+        if self.swap_unit.upper() == 'GB':
             factor = 3
-        elif self.swap_format.upper() == 'MB':
+        elif self.swap_unit.upper() == 'MB':
             factor = 2
-        elif self.swap_format.upper() == 'KB':
+        elif self.swap_unit.upper() == 'KB':
             factor = 1
         muse = 1024**factor
 
@@ -207,11 +207,11 @@ class SystemMonitor(object):
 
         # 原始返回值以bytes表示，自定义输出值的单位（默认GB）
         factor = 3
-        if self.disk_format.upper() == 'GB':
+        if self.disk_unit.upper() == 'GB':
             factor = 3
-        elif self.disk_format.upper() == 'MB':
+        elif self.disk_unit.upper() == 'MB':
             factor = 2
-        elif self.disk_format.upper() == 'KB':
+        elif self.disk_unit.upper() == 'KB':
             factor = 1
         muse = 1024**factor
 

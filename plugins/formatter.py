@@ -29,6 +29,7 @@ def formatting(data, format_target, decorate_conf):
         if key not in data.keys():
             decorate_fields[key] = field_value
 
+    # 格式化数据
     if isinstance(data, dict):
         if format_target.lower() in ['console']:
             # 添加装饰数据

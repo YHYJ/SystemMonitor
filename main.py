@@ -35,7 +35,7 @@ monitor_interval = monitor_conf.get('interval', 300)
 # outputer config           -- 数据输出器配置
 outputer_conf = config.get('outputer', dict())
 outputer_switch = outputer_conf.get('switch', True)
-outputer_selector = outputer_conf.get('outputer_selector', 'console')
+outputer_selector = outputer_conf.get('selector', 'console')
 # log config                -- 日志记录器配置
 log_conf = config.get('log', dict())
 setup_logging(log_conf)

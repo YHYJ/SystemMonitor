@@ -7,7 +7,7 @@
 
 [app]                                       # 程序配置: 程序本身信息
 name = 'SystemMonitor'                      # NOTE: 程序名
-version = '0.2.0'                           # NOTE: 程序版本
+version = '0.2.1'                           # NOTE: 程序版本
 
 
 [monitor]                                   # 监视器配置: 进行系统参数监视
@@ -24,14 +24,14 @@ interval = 5                                # CHANGED: 监视器运行周期（�
     interval = 0                            # NOTE: 以interval前后的CPU时间为基准进行比较，为0则以上次调用以来的CPU时间为基准
     percpu = false                          # NOTE: 为true则返回每个CPU利用率的列表，为false则返回CPU总利用率
     [monitor.mem]                           # 内存监视器配置
-    format = 'GB'                           # NOTE: 以'KB', 'MB'或'GB'格式输出
+    unit = 'GB'                             # NOTE: 单位，'KB', 'MB'或'GB'
     digit = 1                               # NOTE: 最终结果精确度
     [monitor.swap]                          # 交换分区监视器配置
-    format = 'GB'                           # NOTE: 以'KB', 'MB'或'GB'格式输出
+    unit = 'GB'                             # NOTE: 单位，'KB', 'MB'或'GB'
     digit = 1                               # NOTE: 最终结果精确度
     [monitor.disk]                          # 磁盘监视器配置
     path = '/'                              # NOTE: 要监控的磁盘的挂载点
-    format = 'GB'                           # NOTE: 以'KB', 'MB'或'GB'格式输出
+    unit = 'GB'                             # NOTE: 单位，'KB', 'MB'或'GB'
     digit = 1                               # NOTE: 最终结果精确度
     [monitor.nic]                           # 网卡监视器配置
     wan = 'eth0'                            # CHANGED: WAN网卡的接口名
@@ -43,8 +43,8 @@ interval = 5                                # CHANGED: 监视器运行周期（�
 
 [outputer]                                  # 数据输出器配置: 决定数据输出格式和目标（该目标起中间缓存作用）
 switch = true                               # NOTE: 数据输出器开关
-output_format = 'console'                   # CHANGED: 'console'/'mqtt' -- 根据参数值格式化数据
-outputer_selector = 'console'               # CHANGED: 'console'/'mqtt' -- 选择数据输出器
+format = 'console'                          # CHANGED: 'console'/'mqtt' -- 数据格式化目标，在plugins中实现
+selector = 'console'                        # CHANGED: 'console'/'mqtt' -- 数据输出选择器，和format组合可以将不同格式的数据输出到不同位置
     [outputer.console]                      # 数据输出器之一
     [outputer.mqtt]                         # 数据输出器之二
     host = '127.0.0.1'                      # CHANGED: MQTT broker服务地址
@@ -59,11 +59,11 @@ outputer_selector = 'console'               # CHANGED: 'console'/'mqtt' -- 选�
 
 [decorator]                                 # 数据装饰器配置: 用于为数据持久化等目的添加必要的字段
 switch = true                               # NOTE: 数据装饰器开关
-decorator_selector = 'postgresql'           # CHANGED: 'text'/'postgresql' -- 选择数据装饰器
-    [decorator.text]                        # 数据装饰器二
+selector = 'postgresql'                     # CHANGED: 'text'/'postgresql' -- 数据装饰选择器
+    [decorator.text]                        # 数据装饰器一
     filename = 'system_monitor_data.txt'    # CHANGED: 数据存储的文件名
     mode = 'add'                            # CHANGED: 'add'/'write' -- 文件写入模式，追加或覆写
-    [decorator.postgresql]                  # 数据装饰器一
+    [decorator.postgresql]                  # 数据装饰器二
     schema = 'public'                       # CHANGED: 数据存储的Schema名
     table = 'example'                       # CHANGED: 数据存储的Table名
 
