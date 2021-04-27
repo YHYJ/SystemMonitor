@@ -7,7 +7,7 @@
 
 [app]                                       # 程序配置: 程序本身信息
 name = 'SystemMonitor'                      # NOTE: 程序名
-version = 'v0.2.1'                          # NOTE: 程序版本
+version = 'v0.2.2'                          # NOTE: 程序版本
 
 
 [monitor]                                   # 监视器配置: 进行系统参数监视
@@ -38,7 +38,7 @@ interval = 5                                # CHANGED: 监视器运行周期（�
     lan = 'eth1'                            # CHANGED: LAN网卡的接口名
     [monitor.process]                       # 进程监视器配置
     names = ['python']                      # CHANGED: 需要监视的进程名列表
-    keywords = ['main', 'monitor']          # CHANGED: 需要监视的进程的命令行关键字列表
+    keywords = ['keyword1', 'keyword2']     # CHANGED: 需要监视的进程的命令行关键字列表
 
 
 [outputer]                                  # 数据输出器配置: 决定数据输出格式和目标（该目标起中间缓存作用）
@@ -61,7 +61,7 @@ selector = 'console'                        # CHANGED: 'console'/'mqtt' -- 数�
 switch = true                               # NOTE: 数据装饰器开关
 selector = 'postgresql'                     # CHANGED: 'text'/'postgresql' -- 数据装饰选择器
     [decorator.text]                        # 数据装饰器一
-    filename = 'system_monitor_data.txt'    # CHANGED: 数据存储的文件名
+    filename = 'system_monitor.txt'         # CHANGED: 数据存储的文件名
     mode = 'add'                            # CHANGED: 'add'/'write' -- 文件写入模式，追加或覆写
     [decorator.postgresql]                  # 数据装饰器二
     schema = 'public'                       # CHANGED: 数据存储的Schema名

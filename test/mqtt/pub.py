@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # publish参数
     qos = 2
-    topics = ['system/monitor']
+    topics = ['monitor']
 
     # 创建客户端
     client = mqtt.Client()
